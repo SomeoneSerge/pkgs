@@ -13,12 +13,17 @@
         "armv7l-linux"
       ];
       forAllSystems = f: lib.genAttrs systems (system: f system);
-      allPackages = forAllSystems (system: import ./default.nix {
+      supportsPlatform = system: package: builtins.elem system package.meta.platforms;
+      filterByPlatform = system: packages: lib.filterAttrs (name: supportsPlatform system) packages;
+      importPkgs = system: import ./default.nix {
         pkgs = import nixpkgs { inherit system; };
-      });
+      };
+      allAttrs = forAllSystems (system: importPkgs system);
+      allPackages = lib.mapAttrs (system: packages: builtins.removeAttrs packages [ "lib" "overlays" "modules" ]) allAttrs;
+      supportedPackages = lib.mapAttrs filterByPlatform allPackages;
     in
     {
-      packages = lib.mapAttrs (system: packages: builtins.removeAttrs packages [ "lib" "overlays" "modules" ]) allPackages;
-      overlays = allPackages.x86_64-linux.overlays;
+      packages = supportedPackages;
+      overlays = allAttrs.x86_64-linux.overlays;
     };
 }

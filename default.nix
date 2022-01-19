@@ -8,11 +8,11 @@
 
 { pkgs ? import <nixpkgs> { } }:
 
-{
+rec {
   # The `lib`, `modules`, and `overlay` names are special
   lib = import ./lib { inherit pkgs; }; # functions
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { };
+  opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { inherit lib; };
 }
