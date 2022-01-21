@@ -1,4 +1,5 @@
 { lib
+, stdenv
 , buildPythonPackage
 , fetchFromGitHub
 , cmake
@@ -111,8 +112,8 @@ buildPythonPackage rec {
     license = lib.licenses.bsd2;
     description = "Open source Structure-from-Motion pipeline from Mapillary";
     homepage = "https://opensfm.org/";
-    platforms = [
-      "x86_64-linux"
+    broken = stdenv.isDarwin;
+    platforms = lib.platforms.linux ++ [
       "x86_64-darwin"
     ];
   };
