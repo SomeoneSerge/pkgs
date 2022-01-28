@@ -22,7 +22,10 @@ let
     inherit lib modules overlays;
 
     accelerate = pkgs.python3Packages.callPackage ./pkgs/accelerate.nix { inherit (self) lib accelerate; };
+
     dearpygui = pkgs.python3Packages.callPackage ./pkgs/dearpygui { inherit lib; };
+    pyimgui = pkgs.python3Packages.callPackage ./pkgs/pyimgui { inherit lib; };
+
     opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { inherit lib; };
     kornia = pkgs.python3Packages.callPackage ./pkgs/kornia.nix { inherit (self) lib accelerate kornia; };
     gpytorch = pkgs.python3Packages.callPackage ./pkgs/gpytorch.nix { inherit lib; };
