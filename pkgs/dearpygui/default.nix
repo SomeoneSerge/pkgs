@@ -7,6 +7,10 @@
 , xorg
 , glfw
 , glew
+, Cocoa
+, OpenGL
+, CoreVideo
+, IOKit
 }:
 buildPythonPackage rec {
   name = "dearpygui";
@@ -35,6 +39,11 @@ buildPythonPackage rec {
     # are in submodules but well cmake and setuptools are hell of a couple
     glfw
     glew
+  ] ++ lib.optionals stdenv.isDarwin [
+    Cocoa
+    OpenGL
+    CoreVideo
+    IOKit
   ];
   meta = {
     maintainers = [ lib.maintainers.SomeoneSerge ];
