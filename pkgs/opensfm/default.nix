@@ -1,7 +1,7 @@
 { lib
-, stdenv
 , buildPythonPackage
 , fetchFromGitHub
+, fetchpatch
 , cmake
 , opencv
 , opencv4
@@ -32,24 +32,47 @@
 , sphinx
 , matplotlib
 , fpdf
-, pandas
+,
 }:
 
 let
   ceresSplit = (builtins.length ceres-solver.outputs) > 1;
-  ceres' = if ceresSplit then ceres-solver.dev else ceres-solver;
+  ceres' =
+    if ceresSplit
+    then ceres-solver.dev
+    else ceres-solver;
 in
 buildPythonPackage rec {
   pname = "OpenSfM";
   version = "0.5.2";
+
   src = fetchFromGitHub {
     owner = "mapillary";
-    repo = "OpenSfM";
-    # Fixing by commit-id until the upstream issues are solved
-    rev = "2a1c9be07f47f6e26f87fedf8275fcf8ff7b8487";
-    sha256 = "sha256-CARPFuYypgV1YcqZp//Qws8YrV25Z+w/dWB7MbFAKys=";
-    fetchSubmodules = true;
+    repo = pname;
+    rev = "79aa4bdd8bd08dc0cd9e3086d170cedb29ac9760";
+    sha256 = "sha256-dHBrkYwLA1OUxUSoe7DysyeEm9Yy70tIJvAsXivdjrM=";
   };
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/mapillary/OpenSfM/pull/872/commits/a76671db11038f3f4dfe5b8f17582fb447ad7dd5.patch";
+      sha256 = "sha256-4nizQiZIjucdydOLrETvs1xdV3qiYqAQ7x1HECKvlHs=";
+    })
+    ./0002-cmake-find-system-distributed-gtest.patch
+    ./0003-cmake-use-system-pybind11.patch
+    ./0004-pybind_utils.h-conflicts-with-nixpkgs-pybind.patch
+    ./fix-scripts.patch
+  ];
+  postPatch = ''
+    rm opensfm/src/cmake/FindGlog.cmake
+    rm opensfm/src/cmake/FindGflags.cmake
+
+    # HAHOG is the default descriptor.
+    # We'll test both HAHOG and SIFT because this is
+    # where segfaults might be introduced in future
+    echo 'feature_type: SIFT' >> data/berlin/config.yaml
+    echo 'feature_type: HAHOG' >> data/lund/config.yaml
+  '';
+
   nativeBuildInputs = [ cmake pkg-config sphinx ];
   buildInputs = [
     opencv
@@ -61,6 +84,7 @@ buildPythonPackage rec {
     gflags
     gtest
     glog
+    pybind11
   ];
   propagatedBuildInputs = [
     numpy
@@ -81,41 +105,20 @@ buildPythonPackage rec {
     cloudpickle
   ];
   checkInputs = [ pytestCheckHook ];
+
   dontUseCmakeBuildDir = true;
   cmakeFlags = [
     "-Bcmake_build"
     "-Sopensfm/src"
   ];
-  patches = [
-    ./fix-cmake.patch
-    ./fix-scripts.patch
-    ./fix-report-generation.patch
-  ];
-  postPatch = ''
-    # Use upstream means of discovery instead
-    # (exported cmake targets and pkg-config).
-    # Also see the ./fix-cmake.patch
-    rm opensfm/src/cmake/FindEigen.cmake
-    rm opensfm/src/cmake/FindCeres.cmake
-    rm opensfm/src/cmake/FindGlog.cmake
-    rm opensfm/src/cmake/FindGflags.cmake
-    rm -rf opensfm/src/third_party/gtest
 
-    # HAHOG is the default descriptor.
-    # We'll test both HAHOG and SIFT because this is
-    # where segfaults might be introduced in future
-    echo 'feature_type: SIFT' >> data/berlin/config.yaml
-    echo 'feature_type: HAHOG' >> data/lund/config.yaml
-  '';
   pythonImportsCheck = [ "opensfm" ];
+
   meta = {
     maintainers = [ lib.maintainers.SomeoneSerge ];
     license = lib.licenses.bsd2;
     description = "Open source Structure-from-Motion pipeline from Mapillary";
     homepage = "https://opensfm.org/";
-    broken = stdenv.isDarwin || pandas.meta.broken; # pandas broken on python38 in some revisions
-    platforms = lib.platforms.linux ++ [
-      "x86_64-darwin"
-    ];
+    platforms = lib.platforms.linux;
   };
 }
