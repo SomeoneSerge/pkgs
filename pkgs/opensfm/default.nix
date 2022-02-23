@@ -112,6 +112,7 @@ buildPythonPackage rec {
 
   disabledTests = [
     "test_reconstruction_incremental"
+    "test_reconstruction_triangulation"
   ];
 
   pythonImportsCheck = [ "opensfm" ];
