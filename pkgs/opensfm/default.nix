@@ -3,7 +3,6 @@
 , fetchFromGitHub
 , fetchpatch
 , cmake
-, opencv
 , opencv4
 , ceres-solver
 , suitesparse
@@ -75,7 +74,6 @@ buildPythonPackage rec {
 
   nativeBuildInputs = [ cmake pkg-config sphinx ];
   buildInputs = [
-    opencv
     ceres'
     suitesparse
     metis
