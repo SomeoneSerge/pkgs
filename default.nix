@@ -19,4 +19,5 @@ rec {
   overlays = import ./overlays; # nixpkgs overlays
 
   opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { inherit lib; };
+  kornia = pkgs.python3Packages.callPackage ./pkgs/kornia.nix { inherit lib; };
 }
