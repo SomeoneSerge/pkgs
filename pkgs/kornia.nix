@@ -18,7 +18,6 @@ buildPythonPackage rec {
     sha256 = "sha256-7CpONUpuZX5FkRkWBj+VH3rWhbCmyNfYc+IzaaiLJ1w=";
   };
   checkInputs = [ pytest-runner pytestCheckHook scipy ];
-  disabledTestPaths = [ "test/test_contrib.py" "test/x" "test/feature" "test/geometry" "test/tracking" ];
   propagatedBuildInputs = [ pytorch ];
 
   meta = {
