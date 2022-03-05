@@ -10,12 +10,12 @@
 }:
 buildPythonPackage rec {
   name = "kornia";
-  version = "0.6.2";
+  version = "0.6.3";
   src = fetchFromGitHub {
     owner = "kornia";
     repo = name;
     rev = "v${version}";
-    sha256 = "sha256-aORZyePTk+oTqs4VfCgeM5FZR+d8TV3yD54QfywqOHA=";
+    sha256 = "sha256-7CpONUpuZX5FkRkWBj+VH3rWhbCmyNfYc+IzaaiLJ1w=";
   };
   checkInputs = [ pytest-runner pytestCheckHook scipy ];
   disabledTestPaths = [ "test/test_contrib.py" "test/x" "test/feature" "test/geometry" "test/tracking" ];
