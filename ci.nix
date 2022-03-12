@@ -4,6 +4,11 @@ let
   inherit (flake) inputs;
   inherit (flake.inputs.nixpkgs-release) lib;
 
+  overridePreferLocal = a: {
+    preferLocalBuild = true;
+    allowSubstitutes = false;
+  };
+
   branches = [ "release" "unstable" ];
   systems = [ "i686-linux" "x86_64-linux" ];
   argsets = {
@@ -12,16 +17,22 @@ let
       config.allowUnfree = true;
       config.cudaSupport = true;
       overlays = [
-        (final: prev:
-          let forceLocal = a: {
-            preferLocalBuild = true;
-            allowSubstitutes = false;
-          };
-          in
-          {
-            cudatoolkit = prev.cudatoolkit.overrideAttrs forceLocal;
-            cudatoolkit_11 = prev.cudatoolkit_11.overrideAttrs forceLocal;
-          })
+        (final: prev: {
+          cudatoolkit = prev.cudatoolkit.overrideAttrs overridePreferLocal;
+          cudatoolkit_11 = prev.cudatoolkit_11.overrideAttrs overridePreferLocal;
+        })
+      ];
+    };
+    cuda11 = {
+      config.allowUnfree = true;
+      config.cudaSupport = true;
+      overlays = [
+        (final: prev: {
+          cudatoolkit = final.cudatoolkit_11;
+          cudatoolkit_11 = prev.cudatoolkit_11.overrideAttrs overridePreferLocal;
+          cudnn = prev.cudnn_cudatoolkit_11.overrideAttrs overridePreferLocal;
+          cutensor = prev.cutensor_cudatoolkit_11;
+        })
       ];
     };
   };
