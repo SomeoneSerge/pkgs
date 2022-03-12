@@ -19,5 +19,4 @@ rec {
   overlays = import ./overlays; # nixpkgs overlays
 
   python39-opensfm = pkgs.python39Packages.callPackage ./pkgs/opensfm { inherit lib; };
-  python310-opensfm = pkgs.python310Packages.callPackage ./pkgs/opensfm { inherit lib; };
 }
