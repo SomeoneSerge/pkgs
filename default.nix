@@ -18,5 +18,6 @@ rec {
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { inherit lib; };
+  python39-opensfm = pkgs.python39Packages.callPackage ./pkgs/opensfm { inherit lib; };
+  python310-opensfm = pkgs.python310Packages.callPackage ./pkgs/opensfm { inherit lib; };
 }
