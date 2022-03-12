@@ -6,7 +6,7 @@ let
 
   branches = [ "release" "unstable" ];
   systems = [ "i686-linux" "x86_64-linux" ];
-  args = {
+  argsets = {
     vanilla = { };
     cuda = {
       config.allowUnfree = true;
@@ -29,12 +29,12 @@ let
   matrix = lib.cartesianProductOfSets {
     branch = branches;
     system = systems;
-    argsName = lib.attrNames args;
+    argsName = lib.attrNames argsets;
   };
 
   mkName = { branch, system, argsName }:
     let
-      args = args.${argsName};
+      args = argsets.${argsName};
       strings = [
         inputs."nixpkgs-${branch}".rev
         branch
@@ -46,6 +46,7 @@ let
   importOuts = { branch, system, argsName }@combination:
     let
       # pkgs = inputs."nixpkgs-${branch}".legacyPackages."${system}";
+      args = argsets.${argsName};
       pkgs = import inputs."nixpkgs-${branch}" (args // { inherit system; });
       outs = (pkgs.callPackage ./nur-ci.nix { }).cachePkgs;
       outs' = builtins.listToAttrs (builtins.map (out: lib.nameValuePair out.name out) outs);
