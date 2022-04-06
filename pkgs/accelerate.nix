@@ -31,7 +31,7 @@ buildPythonPackage rec {
     license = lib.licenses.asl20;
     description = "A library by huggingface that provides a simple way to train and use PyTorch models with multi-GPU, TPU, mixed-precision";
     homepage = "https://github.com/huggingface/accelerate";
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.linux ++ lib.platforms.darwin;
   };
 }
 
