@@ -3,24 +3,50 @@
 , fetchFromGitHub
 , pytorch
 , setuptools
-, pytest-runner
 , pytest
-, scipy
 , pytestCheckHook
+, accelerate
+, furo
+, opencv4
+, matplotlib
+, pyyaml
+, scipy
+, torchvision
+  # For tests
+, kornia
 }:
 buildPythonPackage rec {
   name = "kornia";
-  version = "0.6.3";
+  version = "0.6.4";
+
   src = fetchFromGitHub {
     owner = "kornia";
     repo = name;
     rev = "v${version}";
-    sha256 = "sha256-7CpONUpuZX5FkRkWBj+VH3rWhbCmyNfYc+IzaaiLJ1w=";
+    hash = "sha256-L1ouqjSEVtvHYYinQr2GWLGb4RsVVT2Y1D2SVq+dsYE=";
   };
-  checkInputs = [ pytest-runner pytestCheckHook scipy ];
+  postPatch = ''
+    substituteInPlace setup.py --replace "'pytest-runner'" ""
+  '';
+
+  propagatedBuildInputs = [ pytorch ];
+  checkInputs = [ pytestCheckHook scipy ];
+
+  passthru.extras-require.x = [
+    accelerate
+    torchvision
+    opencv4
+    pyyaml
+    matplotlib
+  ];
+
   # Tests that fail without "x" optional requirements (e.g. "accelerate")
   disabledTestPaths = [ "test/test_contrib.py" "test/x" "test/feature" "test/geometry" "test/tracking" ];
-  propagatedBuildInputs = [ pytorch ];
+
+  doCheck = false;
+  passthru.tests.korniaTests = kornia.overridePythonAttrs (a: {
+    doCheck = true;
+  });
 
   meta = {
     maintainers = [ lib.maintainers.SomeoneSerge ];
