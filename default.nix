@@ -18,8 +18,7 @@ rec {
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  accelerate = pkgs.python3Packages.callPackage ./pkgs/accelerate.nix { inherit lib pytorch accelerate; };
+  accelerate = pkgs.python3Packages.callPackage ./pkgs/accelerate.nix { inherit lib accelerate; };
   opensfm = pkgs.python3Packages.callPackage ./pkgs/opensfm { inherit lib; };
-  kornia = pkgs.python3Packages.callPackage ./pkgs/kornia.nix { inherit lib pytorch accelerate kornia; };
-  pytorch = pkgs.python3Packages.pytorch.overridePythonAttrs (a: pkgs.lib.recursiveUpdate a { meta.broken = false; });
+  kornia = pkgs.python3Packages.callPackage ./pkgs/kornia.nix { inherit lib accelerate kornia; };
 }
