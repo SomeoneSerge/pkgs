@@ -40,8 +40,7 @@ buildPythonPackage rec {
     matplotlib
   ];
 
-  # Tests that fail without "x" optional requirements (e.g. "accelerate")
-  disabledTestPaths = [ "test/test_contrib.py" "test/x" "test/feature" "test/geometry" "test/tracking" ];
+  disabledTestPaths = [ "test/test_contrib.py" ];
 
   doCheck = false;
   passthru.tests.korniaTests = kornia.overridePythonAttrs (a: {
