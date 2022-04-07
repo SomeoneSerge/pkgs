@@ -52,9 +52,7 @@ buildPythonPackage rec {
       Dear PyGui: A fast and powerful Graphical User Interface Toolkit for Python with minimal dependencies
     '';
     homepage = "https://dearpygui.readthedocs.io/en/";
-    broken = false;
-    platforms = lib.platforms.linux ++ [
-      "x86_64-darwin"
-    ];
+    broken = stdenv.isDarwin;
+    platforms = lib.platforms.unix;
   };
 }

@@ -66,9 +66,7 @@ buildPythonPackage rec {
     license = lib.licenses.bsd3;
     description = "Cython-based Python bindings for dear imgui";
     homepage = "https://pyimgui.readthedocs.io";
-    broken = false;
-    platforms = lib.platforms.linux ++ [
-      "x86_64-darwin"
-    ];
+    broken = stdenv.isDarwin;
+    platforms = lib.platforms.unix;
   };
 }
