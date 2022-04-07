@@ -59,6 +59,8 @@
       pkgs = forAllSystems (system: import nixpkgs {
         inherit system;
         overlays = [ overlay ];
+        config.allowUnfree = true;
+        config.cudaSupport = true;
       });
 
       newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs);
