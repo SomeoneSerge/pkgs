@@ -21,6 +21,7 @@
 , pytest
 , jax
 , dm-tree
+, stdenv
 }:
 
 let
@@ -70,6 +71,8 @@ let
         mv *.whl "$out"
       '';
     };
+
+    meta.broken = stdenv.isDarwin;
   };
 in
 buildPythonPackage {
