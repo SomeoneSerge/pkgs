@@ -13,13 +13,9 @@
   kornia = python-final.callPackage ./pkgs/kornia.nix { };
   gpytorch = python-final.callPackage ./pkgs/gpytorch.nix { };
 
-  instant-ngp = python-final.callPackage ./pkgs/instant-ngp
-    ({
-      cudnn = pkgs.cudaPackages.cudnn or pkgs.cudnn_8_3_cudatoolkit_11_4 or pkgs.cudnn_cudatoolkit_11_4;
-    }
-    // lib.optionalAttrs (python-final ? lark-parser) {
-      lark = python-final.lark-parser;
-    });
+  instant-ngp = python-final.callPackage ./pkgs/instant-ngp {
+    lark = python-final.lark or python-final.lark-parser;
+  };
 
   tensorflow-probability_8_0 = python-final.callPackage ./pkgs/tfp/8.0.nix { };
 
