@@ -15,7 +15,7 @@
 
   instant-ngp = python-final.callPackage ./pkgs/instant-ngp
     ({
-      cudnn = pkgs.cudnn_8_3_cudatoolkit_11_4 or pkgs.cudnn_cudatoolkit_11_4;
+      cudnn = pkgs.cudaPackages.cudnn or pkgs.cudnn_8_3_cudatoolkit_11_4 or pkgs.cudnn_cudatoolkit_11_4;
     }
     // lib.optionalAttrs (python-final ? lark-parser) {
       lark = python-final.lark-parser;
