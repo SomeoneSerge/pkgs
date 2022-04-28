@@ -22,4 +22,7 @@
   gpflow = python-final.callPackage ./pkgs/gpflow.nix { };
   gpflux = python-final.callPackage ./pkgs/gpflux.nix { };
   trieste = python-final.callPackage ./pkgs/trieste.nix { };
+
+  quad-tree-attention = python-final.callPackage ./pkgs/quad-tree-attention { };
+  quad-tree-loftr = python-final.quad-tree-attention.feature-matching;
 }

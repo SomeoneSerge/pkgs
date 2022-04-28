@@ -22,7 +22,7 @@
       notBroken = name: pkg:
         let
           s = (builtins.tryEval (builtins.seq pkg.outPath true)).success;
-          marked = pkg.meta.broken or false;
+          marked = (builtins.tryEval (pkg.meta.broken or false)).value;
         in
         if s || marked then s else lib.warn "${name} must have broken dependencies" s;
 
