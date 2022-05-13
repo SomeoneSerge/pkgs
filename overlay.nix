@@ -47,6 +47,8 @@ in
       gpytorch
       gpflow
       gpflux
+      quad-tree-attention
+      quad-tree-loftr
       trieste;
   };
 }
