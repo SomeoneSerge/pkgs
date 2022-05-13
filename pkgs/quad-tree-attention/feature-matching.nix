@@ -27,6 +27,12 @@ buildPythonPackage {
     mv src FeatureMatching
     cp train.py FeatureMatching/train.py
 
+    touch configs/__init__.py
+    mv configs FeatureMatching/configs
+
+    touch demo/__init__.py
+    mv demo FeatureMatching/demo
+
     find -iname '*.py' -exec sed -i \
       -e 's/^from src\./from FeatureMatching./' \
       -e '/sys.path.append/d' \
