@@ -35,6 +35,7 @@ buildPythonPackage {
 
     find -iname '*.py' -exec sed -i \
       -e 's/^from src\./from FeatureMatching./' \
+      -e 's/^from configs\./from FeatureMatching.configs./' \
       -e '/sys.path.append/d' \
       '{}' +
 
