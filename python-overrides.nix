@@ -12,6 +12,8 @@
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };
 
+  ezy-expecttest = python-final.callPackage ./pkgs/ezy-expecttest.nix { };
+
   opensfm = python-final.callPackage ./pkgs/opensfm { };
   kornia = python-final.callPackage ./pkgs/kornia.nix { };
   gpytorch = python-final.callPackage ./pkgs/gpytorch.nix { };
@@ -25,6 +27,8 @@
   gpflow = python-final.callPackage ./pkgs/gpflow.nix { };
   gpflux = python-final.callPackage ./pkgs/gpflux.nix { };
   trieste = python-final.callPackage ./pkgs/trieste.nix { };
+
+  timm = python-final.callPackage ./pkgs/timm.nix { };
 
   quad-tree-attention = python-final.callPackage ./pkgs/quad-tree-attention { };
   quad-tree-loftr = python-final.quad-tree-attention.feature-matching;
