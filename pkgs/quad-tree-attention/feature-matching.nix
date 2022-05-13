@@ -3,6 +3,7 @@ src:
 { lib
 , buildPythonPackage
 , quad-tree-attention
+, rsync
 , albumentations
 , einops
 , h5py
@@ -27,11 +28,10 @@ buildPythonPackage {
     mv src FeatureMatching
     cp train.py FeatureMatching/train.py
 
-    touch configs/__init__.py
     mv configs FeatureMatching/configs
-
-    touch demo/__init__.py
     mv demo FeatureMatching/demo
+
+    rsync -r --safe-links data/ FeatureMatching/data/
 
     find -iname '*.py' -exec sed -i \
       -e 's/^from src\./from FeatureMatching./' \
@@ -48,6 +48,9 @@ buildPythonPackage {
     name = "FeatureMatching"
     version = "0.0.1"
     description = "LoFTR with Quad Tree Attention"
+
+    [tool.flit.sdist]
+    include = ["configs/", "data/"]
   '';
 
   propagatedBuildInputs = [
@@ -67,6 +70,10 @@ buildPythonPackage {
     pytorch
     pytorch-lightning
     torchvision
+  ];
+
+  nativeBuildInputs = [
+    rsync
   ];
 
   pythonImportsCheck = [
