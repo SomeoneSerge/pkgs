@@ -1,9 +1,13 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
+, callPackage
+, einops
 , pytorch
+, torchvision
 , cudaPackages
 , symlinkJoin
+, timm
 , which
 , ninja
 , cudaArchList ? [ "8.6+PTX" ] # pytorch.cudaArchList
@@ -17,38 +21,6 @@ let
     repo = "QuadTreeAttention";
     rev = "347ae9683a2061806def5aa4991ed797f7ef135c";
     hash = "sha256-h1GK35FiC1Rn+MJ1sAqIIqEDjd4aTnWKL86Q0XUWbyQ=";
-  };
-
-  feature-matching = buildPythonPackage {
-    pname = "FeatureMatching";
-    inherit version;
-
-    format = "flit";
-
-    src = "${src}/FeatureMatching";
-    postPatch = ''
-      mv src FeatureMatching
-      cp train.py FeatureMatching/train.py
-
-      find -iname '*.py' -exec sed -i 's/^from src\./from FeatureMatching./' '{}' +
-
-      cat << EOF > pyproject.toml
-      [build-system]
-      requires = ["flit_core"]
-      build-backend = "flit_core.buildapi"
-
-      [project]
-      name = "FeatureMatching"
-      version = "0.0.1"
-      description = "LoFTR with Quad Tree Attention"
-    '';
-
-    pythonCheckImports = [ "FeatureMatching" ];
-
-    meta = with lib; {
-      maintainers = [ maintainers.SomeoneSerge ];
-      platforms = platforms.unix;
-    };
   };
 
   cudaJoined = symlinkJoin {
@@ -68,7 +40,7 @@ let
   };
 
   quad-tree-attention = buildPythonPackage {
-    pname = "QuadTreeAttention";
+    pname = "quad-tree-attention";
     inherit version;
 
     src = "${src}/QuadTreeAttention";
@@ -77,6 +49,11 @@ let
     # they weren't using that variable anyway
     postPatch = ''
       sed -i '/extern THCState/d' QuadtreeAttention/src/value_aggregation.cpp
+      sed -i '/name=/a packages=["QuadtreeAttention", "QuadtreeAttention.modules", "QuadtreeAttention.functions"],' setup.py
+      touch QuadtreeAttention/__init__.py
+      touch QuadtreeAttention/modules/__init__.py
+      touch QuadtreeAttention/functions/__init__.py
+      ls QuadtreeAttention/*/*py
     '';
 
     buildInputs = [
@@ -90,9 +67,24 @@ let
     CUDA_HOME = "${cudaJoined}";
     TORCH_CUDA_ARCH_LIST = "${lib.concatStringsSep ";" cudaArchList}";
 
+    checkInputs = [
+      (einops.overridePythonAttrs (a: { doCheck = false; }))
+      torchvision
+      timm
+    ];
+
+    pythonImportsCheck = [
+      "QuadtreeAttention"
+      "QuadtreeAttention.functions.quadtree_attention"
+      "QuadtreeAttention.modules.quadtree_attention"
+      "score_computation_cuda"
+      "value_aggregation_cuda"
+    ];
+
     passthru = {
-      inherit feature-matching;
       inherit pytorch;
+
+      feature-matching = callPackage (import ./feature-matching.nix src) { };
     };
 
     meta = with lib; {
