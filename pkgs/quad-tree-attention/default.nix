@@ -53,7 +53,6 @@ let
       touch QuadtreeAttention/__init__.py
       touch QuadtreeAttention/modules/__init__.py
       touch QuadtreeAttention/functions/__init__.py
-      ls QuadtreeAttention/*/*py
     '';
 
     buildInputs = [
