@@ -2,6 +2,9 @@
 
 {
   accelerate = python-final.callPackage ./pkgs/accelerate.nix { };
+
+  albumentations = python-final.callPackage ./pkgs/albumentations { };
+
   pyimgui = python-final.callPackage ./pkgs/pyimgui {
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };
@@ -25,4 +28,6 @@
 
   quad-tree-attention = python-final.callPackage ./pkgs/quad-tree-attention { };
   quad-tree-loftr = python-final.quad-tree-attention.feature-matching;
+
+  qudida = python-final.callPackage ./pkgs/qudida { };
 }

@@ -39,6 +39,7 @@ in
 
   some-pkgs = {
     inherit (final.python3Packages)
+      albumentations
       instant-ngp
       opensfm
       pyimgui dearpygui
