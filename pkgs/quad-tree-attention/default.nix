@@ -13,14 +13,14 @@
 , cudaArchList ? [ "8.6+PTX" ] # pytorch.cudaArchList
 }:
 let
-  lastUpdated = "2022-04-21";
+  lastUpdated = "2022-05-13";
   version = "unstable-${lastUpdated}";
 
   src = fetchFromGitHub {
     owner = "Tangshitao";
     repo = "QuadTreeAttention";
-    rev = "347ae9683a2061806def5aa4991ed797f7ef135c";
-    hash = "sha256-h1GK35FiC1Rn+MJ1sAqIIqEDjd4aTnWKL86Q0XUWbyQ=";
+    rev = "a74428c9ca64828e4e7feaee601fce828389c4fe";
+    hash = "sha256-mxX5YzTY+aZTL2y4W71iQT9rljQdd18JGbXJ63yZQHs=";
   };
 
   cudaJoined = symlinkJoin {
