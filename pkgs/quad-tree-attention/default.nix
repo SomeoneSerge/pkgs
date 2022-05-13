@@ -41,10 +41,6 @@ let
       name = "FeatureMatching"
       version = "0.0.1"
       description = "LoFTR with Quad Tree Attention"
-
-      [projects.scripts]
-      train = "FeatureMatching:train"
-      EOF
     '';
 
     pythonCheckImports = [ "FeatureMatching" ];
