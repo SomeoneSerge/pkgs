@@ -1,4 +1,6 @@
 # Use the system-provided nixpkgs instead of the pinned dependencies
-{ pkgs ? import <nixpkgs> { overlays = [ (import ./overlay.nix) ]; } }:
+let
+  pkgs = import <nixpkgs> { overlays = [ (import ./overlay.nix) ]; };
+in
 
 pkgs.some-pkgs
