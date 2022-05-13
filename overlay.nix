@@ -42,14 +42,16 @@ in
       albumentations
       instant-ngp
       opensfm
+      ezy-expecttest
       pyimgui dearpygui
       kornia
       accelerate
       gpytorch
       gpflow
       gpflux
+      timm
+      trieste
       quad-tree-attention
-      quad-tree-loftr
-      trieste;
+      quad-tree-loftr;
   };
 }
