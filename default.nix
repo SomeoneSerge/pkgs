@@ -1,6 +1,10 @@
-# Use the system-provided nixpkgs instead of the pinned dependencies
-let
-  pkgs = import <nixpkgs> { overlays = [ (import ./overlay.nix) ]; };
-in
+# Use pkgs provided by NUR
+{ pkgs }:
 
-pkgs.some-pkgs
+let
+  overlay = import ./overlay.nix;
+  final = pkgs
+    // overlay final pkgs
+    // { callPackage = pkgs.lib.callPackageWith final; };
+in
+final.some-pkgs
