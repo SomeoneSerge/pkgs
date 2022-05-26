@@ -5,6 +5,8 @@
 
   albumentations = python-final.callPackage ./pkgs/albumentations { };
 
+  functorch = python-final.callPackage ./pkgs/functorch.nix { };
+
   pyimgui = python-final.callPackage ./pkgs/pyimgui {
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };

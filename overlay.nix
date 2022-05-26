@@ -40,6 +40,7 @@ in
   some-pkgs = {
     inherit (final.python3Packages)
       albumentations
+      functorch
       instant-ngp
       opensfm
       ezy-expecttest
