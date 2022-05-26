@@ -8,6 +8,9 @@
 , hip
 , which
 , cudaSupport ? config.cudaSupport or false
+, pytestCheckHook
+, ezy-expecttest
+, functorch
 }:
 
 let
@@ -39,7 +42,19 @@ buildPythonPackage {
     which
   ];
 
+  checkInputs = [
+    pytestCheckHook
+    ezy-expecttest
+  ];
+
   pythonImportsCheck = [ "functorch" ];
+
+  preCheck = ''
+    rm -rf functorch
+  '';
+
+  doCheck = false;
+  passthru.tests.check = functorch.overridePythonAttrs (_: { doCheck = true; });
 
   disabled = lib.versionOlder pytorch.version "1.11.0";
 
