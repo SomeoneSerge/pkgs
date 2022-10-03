@@ -13,7 +13,7 @@
 , IOKit
 }:
 buildPythonPackage rec {
-  name = "dearpygui";
+  pname = "dearpygui";
   version = "1.5.0";
   src = fetchFromGitHub {
     owner = "hoffstadt";
