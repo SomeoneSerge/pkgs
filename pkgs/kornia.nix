@@ -22,7 +22,7 @@ buildPythonPackage rec {
 
   src = fetchFromGitHub {
     owner = "kornia";
-    repo = name;
+    repo = pname;
     rev = "v${version}";
     hash = "sha256-L1ouqjSEVtvHYYinQr2GWLGb4RsVVT2Y1D2SVq+dsYE=";
   };
