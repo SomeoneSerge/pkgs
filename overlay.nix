@@ -42,6 +42,7 @@ in
       albumentations
       cppimport
       instant-ngp
+      nvdiffrast
       opensfm
       ezy-expecttest
       imviz pyimgui dearpygui
