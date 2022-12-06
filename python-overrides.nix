@@ -19,6 +19,8 @@
 
   ezy-expecttest = python-final.callPackage ./pkgs/ezy-expecttest.nix { };
 
+  nvdiffrast = python-final.callPackage ./pkgs/nvdiffrast.nix { };
+
   opensfm = python-final.callPackage ./pkgs/opensfm { };
   kornia = python-final.callPackage ./pkgs/kornia.nix { };
   gpytorch = python-final.callPackage ./pkgs/gpytorch.nix { };
