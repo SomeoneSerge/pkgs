@@ -57,7 +57,9 @@ in
       trieste
       qudida
       quad-tree-attention
-      quad-tree-loftr;
+      quad-tree-loftr
+      galai
+      parallelformers;
 
     lustre = final.callPackage ./pkgs/lustre { };
   };

@@ -44,4 +44,7 @@
   quad-tree-loftr = python-final.quad-tree-attention.feature-matching;
 
   qudida = python-final.callPackage ./pkgs/qudida { };
+
+  galai = python-final.callPackage ./pkgs/galai.nix { };
+  parallelformers = python-final.callPackage ./pkgs/parallelformers.nix { };
 }
