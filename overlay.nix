@@ -39,6 +39,7 @@ in
 
   some-pkgs = {
     inherit (final.python3Packages)
+      arxiv-py
       albumentations
       cppimport
       instant-ngp

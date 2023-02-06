@@ -3,6 +3,8 @@
 {
   accelerate = python-final.callPackage ./pkgs/accelerate.nix { };
 
+  arxiv-py = python-final.callPackage ./pkgs/arxiv-py.nix { };
+
   albumentations = python-final.callPackage ./pkgs/albumentations { };
 
   cppimport = python-final.callPackage ./pkgs/cppimport.nix { };
