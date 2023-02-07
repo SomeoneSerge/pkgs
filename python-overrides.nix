@@ -9,6 +9,8 @@
 
   cppimport = python-final.callPackage ./pkgs/cppimport.nix { };
 
+  grobid-client-python = python-final.callPackage ./pkgs/grobid-client-python.nix { };
+
   imviz = python-final.callPackage ./pkgs/imviz.nix {
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };

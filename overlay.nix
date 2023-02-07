@@ -42,6 +42,7 @@ in
       arxiv-py
       albumentations
       cppimport
+      grobid-client-python
       instant-ngp
       nvdiffrast
       opensfm
