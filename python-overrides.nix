@@ -21,6 +21,8 @@
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };
 
+  datasette-render-images = python-final.callPackage ./pkgs/datasette-plugins/datasette-render-images.nix { };
+
   ezy-expecttest = python-final.callPackage ./pkgs/ezy-expecttest.nix { };
 
   nvdiffrast = python-final.callPackage ./pkgs/nvdiffrast.nix { };

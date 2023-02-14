@@ -43,6 +43,7 @@ in
       albumentations
       cppimport
       grobid-client-python
+      datasette-render-images
       instant-ngp
       nvdiffrast
       opensfm
