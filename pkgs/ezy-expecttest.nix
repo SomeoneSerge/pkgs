@@ -1,7 +1,7 @@
 { lib
 , buildPythonPackage
 , fetchPypi
-, poetry
+, poetry-core
 }:
 
 let
@@ -22,7 +22,7 @@ buildPythonPackage {
   };
 
   buildInputs = [
-    poetry
+    poetry-core
   ];
 
   meta = {
