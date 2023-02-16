@@ -6,7 +6,7 @@
 
 let
   pname = "ezy-expecttest";
-  version = "0.1.3";
+  version = "0.1.4";
 in
 buildPythonPackage {
   inherit pname version;
@@ -18,7 +18,7 @@ buildPythonPackage {
     pname = "expecttest";
     inherit version;
     format = "setuptools";
-    hash = "sha256-gwV2lYEdlBKK7RPtCUoHDbkOCpLqQAcfjuBzy6tXFJo=";
+    hash = "sha256-JtjzyzqiOYkkKoeC4WkyXnbECkVMnpljnn2KjuR4YvY=";
   };
 
   buildInputs = [
