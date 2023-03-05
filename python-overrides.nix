@@ -35,8 +35,6 @@
     lark = python-final.lark or python-final.lark-parser;
   };
 
-  tensorflow-probability_8_0 = python-final.callPackage ./pkgs/tfp/8.0.nix { };
-
   geomstats = python-final.callPackage ./pkgs/geomstats.nix { };
   geoopt = python-final.callPackage ./pkgs/geoopt.nix { };
 
