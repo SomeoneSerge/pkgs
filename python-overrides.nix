@@ -21,6 +21,10 @@
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
   };
 
+  dali = python-final.callPackage ./pkgs/dali.nix {
+    inherit (pkgs) lmdb protobuf;
+    # inherit (pkgs.llvmPackages) stdenv;
+  };
   datasette-render-images = python-final.callPackage ./pkgs/datasette-plugins/datasette-render-images.nix { };
 
   ezy-expecttest = python-final.callPackage ./pkgs/ezy-expecttest.nix { };

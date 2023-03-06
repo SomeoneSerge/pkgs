@@ -42,6 +42,7 @@ in
       arxiv-py
       albumentations
       cppimport
+      dali
       grobid-client-python
       datasette-render-images
       instant-ngp
