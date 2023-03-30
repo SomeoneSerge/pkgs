@@ -49,6 +49,9 @@ stdenv.mkDerivation rec {
 
       file(GLOB LLAMA_HEADERS CONFIGURE_DEPENDS "*.h" "*.hpp")
       install(FILES ''${LLAMA_HEADERS} DESTINATION ''${CMAKE_INSTALL_INCLUDEDIR})
+
+      file(GLOB LLAMA_SCRIPTS CONFIGURE_DEPENDS "*.py")
+      install(FILES ''${LLAMA_SCRIPTS} DESTINATION ''${CMAKE_INSTALL_BINDIR})
       EOF
     '';
 
