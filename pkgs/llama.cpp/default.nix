@@ -39,7 +39,7 @@ stdenv.mkDerivation rec {
       set_target_properties(quantize PROPERTIES OUTPUT_NAME "llama-quantize")
 
       install(
-        TARGETS main llama ggml embedding perplexity common
+        TARGETS llama ggml main quantize embedding perplexity
         EXPORT llamaTargets
       )
       install(EXPORT llamaTargets
