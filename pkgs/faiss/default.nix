@@ -5,7 +5,6 @@
 , cmake
 , cudaPackages
 , cudaSupport ? config.cudaSupport or false
-, cudaCapabilities ? [ "60" "70" "80" "86" ]
 , pythonSupport ? true
 , pythonPackages
 , llvmPackages
@@ -26,8 +25,9 @@
 
 let
   pname = "faiss";
-  version = "1.7.2";
-  inherit (cudaPackages) cudatoolkit;
+  version = "1.7.3";
+  inherit (cudaPackages) cudatoolkit cudaFlags;
+  inherit (cudaFlags) dropDot cudaCapabilities;
 in
 stdenv.mkDerivation {
   inherit pname version;
@@ -38,7 +38,7 @@ stdenv.mkDerivation {
     owner = "facebookresearch";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-Tklf5AaqJbOs9qtBZVcxXPLAp+K54EViZLSOvEhmswg=";
+    hash = "sha256-QETVgRk4PXzaODeQF1+78To8IiI1Ft1lV8pcBTk1Jhg=";
   };
 
   buildInputs = [
@@ -72,7 +72,7 @@ stdenv.mkDerivation {
     "-DFAISS_ENABLE_PYTHON=${if pythonSupport then "ON" else "OFF"}"
     "-DFAISS_OPT_LEVEL=${optLevel}"
   ] ++ lib.optionals cudaSupport [
-    "-DCMAKE_CUDA_ARCHITECTURES=${lib.concatStringsSep ";" cudaCapabilities}"
+    "-DCMAKE_CUDA_ARCHITECTURES=${lib.concatStringsSep ";" (map dropDot cudaCapabilities)}"
   ];
 
 
