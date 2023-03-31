@@ -14,6 +14,11 @@
     pythonPackages = python-final;
   });
 
+  some-pkgs-faiss = python-final.toPythonModule (pkgs.some-pkgs.faiss.override {
+    pythonSupport = true;
+    pythonPackages = python-final;
+  });
+
   grobid-client-python = python-final.callPackage ./pkgs/grobid-client-python.nix { };
 
   imviz = python-final.callPackage ./pkgs/imviz.nix {

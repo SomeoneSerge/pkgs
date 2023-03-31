@@ -78,6 +78,4 @@ in
       lustre = final.callPackage ./pkgs/lustre { };
       zotfile = final.callPackage ./pkgs/zotfile.nix { };
     };
-
-  inherit (final.some-pkgs) faiss;
 }
