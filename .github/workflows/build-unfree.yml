@@ -90,5 +90,5 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_UNFREE }}'
         name: some-unfree
     - name: nix-build
-      run: nix-build -A faiss
+      run: nix build -L pkgsUnfree.some-pkgs.faiss
 

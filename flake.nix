@@ -61,6 +61,16 @@
         overlays = [ overlay ];
       });
 
+      pkgsUnfree = forAllSystems (system: import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          cudaSupport = true;
+          cudaCapabilities = [ "8.6" ];
+        };
+        overlays = [ overlay ];
+      });
+
       newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs);
       supportedPkgs = lib.mapAttrs filterUnsupported newAttrs;
 
@@ -68,7 +78,10 @@
         inherit overlay;
 
         packages = supportedPkgs;
-        legacyPackages = newAttrs // (forAllSystems (system: { pkgs = pkgs.${system}; }));
+        legacyPackages = newAttrs // (forAllSystems (system: {
+          pkgs = pkgs.${system};
+          pkgsUnfree = pkgsUnfree.${system};
+        }));
       };
     in
     outputs;
