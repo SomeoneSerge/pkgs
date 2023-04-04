@@ -35,21 +35,23 @@ let
   inherit (cudaPackages) cudaFlags;
   inherit (cudaFlags) cudaCapabilities dropDot;
 
+  cudaPaths = with cudaPackages; [
+    cuda_nvcc
+    cuda_cudart # cuda_runtime.h
+    libcublas
+    libcurand
+  ] ++ lib.optionals useThrustSourceBuild [
+    nvidia-thrust
+  ] ++ lib.optionals (!useThrustSourceBuild) [
+    cuda_cccl
+  ] ++ lib.optionals (cudaPackages ? cuda_profiler_api) [
+    cuda_profiler_api # cuda_profiler_api.h
+  ] ++ lib.optionals (!(cudaPackages ? cuda_profiler_api)) [
+    cuda_nvprof # cuda_profiler_api.h
+  ];
   cudaJoined = symlinkJoin {
     name = "cuda-packages-unsplit";
-    paths = with cudaPackages; [
-      cuda_cudart # cuda_runtime.h
-      libcublas
-      libcurand
-    ] ++ lib.optionals useThrustSourceBuild [
-      nvidia-thrust
-    ] ++ lib.optionals (!useThrustSourceBuild) [
-      cuda_cccl
-    ] ++ lib.optionals (cudaPackages ? cuda_profiler_api) [
-      cuda_profiler_api # cuda_profiler_api.h
-    ] ++ lib.optionals (!(cudaPackages ? cuda_profiler_api)) [
-      cuda_nvprof # cuda_profiler_api.h
-    ];
+    paths = cudaPaths;
   };
 in
 stdenv.mkDerivation {
@@ -64,6 +66,11 @@ stdenv.mkDerivation {
     hash = "sha256-QETVgRk4PXzaODeQF1+78To8IiI1Ft1lV8pcBTk1Jhg=";
   };
 
+  postPatch = ''
+    substituteInPlace CMakeLists.txt --replace "cmake_minimum_required(VERSION 3.17" "cmake_minimum_required(VERSION 3.25"
+  '';
+
+
   buildInputs = [
     blas
     swig
@@ -73,8 +80,6 @@ stdenv.mkDerivation {
     pythonPackages.wheel
   ] ++ lib.optionals stdenv.cc.isClang [
     llvmPackages.openmp
-  ] ++ lib.optionals cudaSupport [
-    cudaJoined
   ];
 
   propagatedBuildInputs = lib.optionals pythonSupport [
@@ -82,7 +87,6 @@ stdenv.mkDerivation {
   ];
 
   nativeBuildInputs = [ cmake ] ++ lib.optionals cudaSupport [
-    cudaPackages.cuda_nvcc
     addOpenGLRunpath
   ] ++ lib.optionals pythonSupport [
     pythonPackages.python
@@ -98,7 +102,9 @@ stdenv.mkDerivation {
     "-DFAISS_OPT_LEVEL=${optLevel}"
   ] ++ lib.optionals cudaSupport [
     "-DCMAKE_CUDA_ARCHITECTURES=${builtins.concatStringsSep ";" (map dropDot cudaCapabilities)}"
-    "-DCUDAToolkit_INCLUDE_DIR=${cudaJoined}/include"
+    # "-DCUDAToolkit_ROOT=${builtins.concatStringsSep ";"  (map lib.getLib cudaPaths)}"
+    "-DCUDAToolkit_ROOT=${cudaJoined}"
+    "-DCMAKE_CUDA_COMPILER=${cudaPackages.cuda_nvcc}"
   ];
 
 
