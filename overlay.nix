@@ -66,7 +66,8 @@ in
         qudida
         quad-tree-attention
         quad-tree-loftr
-        pynvjpeg;
+        pynvjpeg
+        safetensors;
 
       callPackage = final.lib.callPackageWith (final // final.some-pkgs);
 
