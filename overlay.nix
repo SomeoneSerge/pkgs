@@ -71,6 +71,7 @@ in
 
       callPackage = final.lib.callPackageWith (final // final.some-pkgs);
 
+      cnpyxx = final.callPackage ./pkgs/cnpyxx.nix { };
       cppcolormap = final.callPackage ./pkgs/cppcolormap.nix { };
 
       alpaca-cpp = final.callPackage ./pkgs/alpaca-cpp.nix { };
