@@ -14,28 +14,9 @@ in
 {
   inherit lib;
 
-  pythonPackagesOverlays = (prev.pythonPackagesOverlays or [ ]) ++ [
+  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
     (final.callPackage ./python-overrides.nix { })
   ];
-
-  python =
-    let
-      self = prev.python.override {
-        inherit self;
-        packageOverrides = lib.composeManyExtensions final.pythonPackagesOverlays;
-      }; in
-    self;
-
-  python3 =
-    let
-      self = prev.python3.override {
-        inherit self;
-        packageOverrides = lib.composeManyExtensions final.pythonPackagesOverlays;
-      }; in
-    self;
-
-  pythonPackages = final.python.pkgs;
-  python3Packages = final.python3.pkgs;
 
   # Some things we want to expose even outside some-pkgs namespace:
   inherit (final.some-pkgs) faiss;
