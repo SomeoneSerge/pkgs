@@ -44,6 +44,7 @@ in
         gpflux
         timm
         trieste
+        lpips
         qudida
         quad-tree-attention
         quad-tree-loftr

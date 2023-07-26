@@ -45,6 +45,7 @@
   opensfm = python-final.callPackage ./pkgs/opensfm { };
   kornia = python-final.callPackage ./pkgs/kornia.nix { };
   gpytorch = python-final.callPackage ./pkgs/gpytorch.nix { };
+  lpips = python-final.callPackage ./pkgs/lpips.nix { };
 
   instant-ngp = python-final.callPackage ./pkgs/instant-ngp {
     lark = python-final.lark or python-final.lark-parser;
