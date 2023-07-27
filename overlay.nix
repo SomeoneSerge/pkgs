@@ -50,6 +50,8 @@ in
         quad-tree-attention
         quad-tree-loftr
         pynvjpeg
+        openai-clip
+        face-attribute-editing-stylegan3
         safetensors;
 
       callPackage = final.lib.callPackageWith (final // final.some-pkgs);

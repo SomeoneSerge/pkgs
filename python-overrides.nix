@@ -70,5 +70,9 @@
 
   mask-face-gan = python-final.callPackage ./pkgs/mask-face-gan.nix { };
 
+  openai-clip = python-final.callPackage ./pkgs/openai-clip.nix { };
+
+  face-attribute-editing-stylegan3 = python-final.callPackage ./pkgs/face-attribute-editing-stylegan3.nix { };
+
   safetensors = python-final.callPackage ./pkgs/safetensors { };
 }
