@@ -45,6 +45,7 @@ in
         timm
         trieste
         lpips
+        mask-face-gan
         qudida
         quad-tree-attention
         quad-tree-loftr

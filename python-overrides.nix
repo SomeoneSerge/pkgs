@@ -68,5 +68,7 @@
 
   pynvjpeg = python-final.callPackage ./pkgs/pynvjpeg.nix { };
 
+  mask-face-gan = python-final.callPackage ./pkgs/mask-face-gan.nix { };
+
   safetensors = python-final.callPackage ./pkgs/safetensors { };
 }
