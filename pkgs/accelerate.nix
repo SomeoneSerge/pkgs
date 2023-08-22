@@ -8,13 +8,13 @@
 }:
 buildPythonPackage rec {
   name = "accelerate";
-  version = "0.6.2";
+  version = "0.21.0";
 
   src = fetchFromGitHub {
     owner = "huggingface";
     repo = name;
     rev = "v${version}";
-    hash = "sha256-Fuq13JWUXCG4NEeR5rWn41JDmTI6tyImCrOxss6ekNs=";
+    hash = "sha256-BwM3gyNhsRkxtxLNrycUGwBmXf8eq/7b56/ykMryt5w=";
   };
 
   propagatedBuildInputs = [ pytorch ];
