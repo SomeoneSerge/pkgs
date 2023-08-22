@@ -70,5 +70,7 @@ in
 
       lustre = final.callPackage ./pkgs/lustre { };
       zotfile = final.callPackage ./pkgs/zotfile.nix { };
+
+      update-flake-outputs = final.callPackage ./pkgs/update-flake-outputs { };
     };
 }
