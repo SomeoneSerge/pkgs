@@ -163,9 +163,11 @@ if __name__ == "__main__":
 
             with git_worktree(new_checkout, f"update-flake-outputs/{name}"):
                 try:
-                    old = get_head()
-                    nix_update(name)
-                    new = get_head()
+                    # Smth weird about github actions, let's cd again
+                    with cwd(new_checkout):
+                        old = get_head()
+                        nix_update(name)
+                        new = get_head()
 
                     if new == old:
                         continue
