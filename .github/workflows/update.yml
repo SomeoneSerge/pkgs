@@ -24,6 +24,8 @@ jobs:
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         name: pkgs
+    - run: git config --global user.email "github-action@users.noreply.github.com"
+    - run: git config --global user.name "github-action"
     - name: nix-update
       run: nix run .#update-flake-outputs ./.
       env:
