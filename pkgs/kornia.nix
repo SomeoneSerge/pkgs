@@ -18,13 +18,13 @@
 }:
 buildPythonPackage rec {
   pname = "kornia";
-  version = "0.6.7";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "kornia";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-SWSVGwc6jet5p8Pm3Cz1DR70bhnZDMIwJzFAliOgjoA=";
+    hash = "sha256-XcQXKn4F3DIgn+XQcN5ZcGZLehd/IPBgLuGzIkPSxZg=";
   };
   postPatch = ''
     substituteInPlace setup.py --replace "'pytest-runner'" ""
