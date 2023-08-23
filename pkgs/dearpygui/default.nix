@@ -1,16 +1,16 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
-, pkg-config
 , cmake
+, Cocoa
+, CoreVideo
+, glew
+, glfw
+, IOKit
+, OpenGL
+, pkg-config
 , stdenv
 , xorg
-, glfw
-, glew
-, Cocoa
-, OpenGL
-, CoreVideo
-, IOKit
 }:
 buildPythonPackage rec {
   pname = "dearpygui";
