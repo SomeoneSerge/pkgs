@@ -12,6 +12,7 @@ from typing import Optional
 
 parser = argparse.ArgumentParser("update-flake-outputs")
 parser.add_argument("git_checkout")
+parser.add_argument("--remote")
 
 
 def get_flake_outputs(uri: str):
@@ -105,6 +106,20 @@ def git_commit_if_any(message):
         return False
 
 
+def git_push_force_set_default(remote, remote_branch):
+    subprocess.run(
+        [
+            "git",
+            "push",
+            "-u",
+            remote,
+            f"HEAD:{remote_branch}",
+        ],
+        check=True,
+        capture_output=True,
+    )
+
+
 def gh_pr_list():
     return json.loads(
         subprocess.run(
@@ -115,18 +130,21 @@ def gh_pr_list():
     )
 
 
-def gh_pr_create(title):
+def gh_pr_create(title, remote_branch=None):
+    args = [
+        "gh",
+        "pr",
+        "create",
+        "--title",
+        title,
+        "--fill",
+        "-B",
+        "master",
+    ]
+    if remote_branch is not None:
+        args.extend(["--head", remote_branch])
     return subprocess.run(
-        [
-            "gh",
-            "pr",
-            "create",
-            "--title",
-            title,
-            "--fill",
-            "-B",
-            "master",
-        ],
+        args,
         check=True,
         shell=False,
     ).stdout.decode("utf8")
@@ -161,7 +179,8 @@ if __name__ == "__main__":
         for name in packages:
             new_checkout = Path(td, name)
 
-            with git_worktree(new_checkout, f"update-flake-outputs/{name}"):
+            branch_name = f"update-flake-outputs/{name}"
+            with git_worktree(new_checkout, branch_name):
                 try:
                     # Smth weird about github actions, let's cd again
                     with cwd(new_checkout):
@@ -177,6 +196,7 @@ if __name__ == "__main__":
                         print(f"Skipping because an old PR is already open: {msg}")
                         continue
 
+                    git_push_force_set_default(args.remote, branch_name)
                     gh_pr_create(msg)
                 except Exception as e:
                     print(f"Failed to update {name}: {e}")
