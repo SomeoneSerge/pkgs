@@ -126,7 +126,6 @@ def gh_pr_list():
         subprocess.run(
             ["gh", "pr", "list", "--json", "title"],
             check=True,
-            capture_output=True,
         ).stdout
     )
 
