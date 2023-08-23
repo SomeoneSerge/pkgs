@@ -48,7 +48,7 @@ jobs:
         name: some-unfree
     - uses: DeterminateSystems/magic-nix-cache-action@v2
     - name: Build nix packages
-      run: nix shell -f 'https://github.com/Mic92/nix-build-uncached/archive/refs/tags/v1.1.1.tar.gz' -c nix-build-uncached -build-flags -L ci.nix -A cacheOutputs --keep-going
+      run: nix shell -f 'https://github.com/Mic92/nix-build-uncached/archive/refs/tags/v1.1.2.tar.gz' -c nix-build-uncached -build-flags -L ci.nix -A cacheOutputs --keep-going
     - name: Trigger NUR update
       # Don't replace <YOUR_REPO_NAME> here!
       if: ${{ matrix.nurRepo != '<YOUR_REPO_NAME>' }}
