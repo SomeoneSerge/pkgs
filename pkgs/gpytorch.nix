@@ -8,13 +8,13 @@
 }:
 buildPythonPackage rec {
   pname = "gpytorch";
-  version = "1.9.0";
+  version = "1.11";
 
   src = fetchFromGitHub {
     owner = "cornellius-gp";
     repo = "gpytorch";
     rev = "v${version}";
-    sha256 = "sha256-TBATjcSw95IHLGUkpj/+pTtprh272LqYtkOyQNfYgJ8=";
+    sha256 = "sha256-cpkfjx5G/4duL1Rr4nkHTHi03TDcYbcx3bKP2Ny7Ijo=";
   };
   propagatedBuildInputs = [
     linear_operator
