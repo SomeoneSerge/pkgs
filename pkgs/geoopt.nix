@@ -1,12 +1,12 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
+, flit-core
+, geoopt
 , numpy
+, pytestCheckHook
 , pytorch
 , scipy
-, pytestCheckHook
-, geoopt
-, flit-core
 }:
 
 let
