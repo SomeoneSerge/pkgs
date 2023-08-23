@@ -1,7 +1,7 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
-, pytorch
+, torch
 , setuptools
 , pytest
 , pytestCheckHook
@@ -18,20 +18,22 @@
 }:
 buildPythonPackage rec {
   pname = "kornia";
-  version = "0.6.7";
+  version = "0.7.0";
+  format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "kornia";
-    repo = pname;
+    repo = "kornia";
     rev = "v${version}";
-    hash = "sha256-SWSVGwc6jet5p8Pm3Cz1DR70bhnZDMIwJzFAliOgjoA=";
+    hash = "sha256-XcQXKn4F3DIgn+XQcN5ZcGZLehd/IPBgLuGzIkPSxZg=";
   };
-  postPatch = ''
-    substituteInPlace setup.py --replace "'pytest-runner'" ""
-  '';
+
+  nativeBuildInputs = [
+    setuptools
+  ];
 
   buildInputs = [ packaging ];
-  propagatedBuildInputs = [ pytorch ];
+  propagatedBuildInputs = [ torch ];
   checkInputs = [ pytestCheckHook scipy ];
 
   passthru.extras-require.x = [
