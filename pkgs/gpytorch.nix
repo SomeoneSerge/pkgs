@@ -1,9 +1,10 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
-, scikit-learn
-, pytorch
+, linear_operator
 , pyro-ppl
+, pytorch
+, scikit-learn
 }:
 buildPythonPackage rec {
   pname = "gpytorch";
@@ -16,9 +17,10 @@ buildPythonPackage rec {
     sha256 = "sha256-TBATjcSw95IHLGUkpj/+pTtprh272LqYtkOyQNfYgJ8=";
   };
   propagatedBuildInputs = [
-    scikit-learn
-    pytorch
+    linear_operator
     pyro-ppl
+    pytorch
+    scikit-learn
   ];
 
   dontUseSetuptoolsCheck = true;
