@@ -122,12 +122,14 @@ def git_push_force_set_default(remote, remote_branch):
 
 
 def gh_pr_list():
-    return json.loads(
-        subprocess.run(
-            ["gh", "pr", "list", "--json", "title"],
-            check=True,
-        ).stdout
+    p = subprocess.run(
+        ["gh", "pr", "list", "--json", "title"],
+        capture_output=True,
     )
+    if p.returncode != 0:
+        print(f"gh pr list failed: {p.stderr}")
+    p.check_returncode()
+    return json.loads(p.stdout)
 
 
 def gh_pr_create(title, remote_branch=None):
