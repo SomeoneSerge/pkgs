@@ -85,6 +85,7 @@ stdenv.mkDerivation {
   ];
 
   meta = {
+    broken = true; # Lustre fid handling requires that CONFIG_FHANDLE is enabled in your kernel
     maintainers = [ lib.maintainers.SomeoneSerge ];
     license = lib.licenses.gpl2;
     description = "A parallel file system for HPC clusters";
