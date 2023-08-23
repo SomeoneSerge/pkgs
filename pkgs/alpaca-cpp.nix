@@ -6,7 +6,7 @@
 
 stdenv.mkDerivation rec {
   pname = "alpaca-cpp";
-  version = "unstable-2023-03-30";
+  version = "9116ae9";
 
   src = fetchFromGitHub {
     owner = "antimatter15";
