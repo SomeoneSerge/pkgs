@@ -182,11 +182,9 @@ if __name__ == "__main__":
             branch_name = f"update-flake-outputs/{name}"
             with git_worktree(new_checkout, branch_name):
                 try:
-                    # Smth weird about github actions, let's cd again
-                    with cwd(new_checkout):
-                        old = get_head()
-                        nix_update(name)
-                        new = get_head()
+                    old = get_head()
+                    nix_update(name)
+                    new = get_head()
 
                     if new == old:
                         continue
