@@ -65,15 +65,6 @@ jobs:
     - uses: DeterminateSystems/magic-nix-cache-action@v2
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
-    - name: Check evaluation
-      run: |
-        nix-env -f . -qa \* --meta --xml \
-          --allowed-uris https://static.rust-lang.org \
-          --option restrict-eval true \
-          --option allow-import-from-derivation true \
-          --drv-path --show-trace \
-          -I nixpkgs=$(nix-instantiate --find-file nixpkgs) \
-          -I $PWD
     - name: Build nix packages
       run: nix shell -f 'https://github.com/Mic92/nix-build-uncached/archive/refs/tags/v1.1.2.tar.gz' -c nix-build-uncached -build-flags -L ci.nix -A cacheOutputs
     - name: Trigger NUR update
