@@ -30,4 +30,4 @@ jobs:
     - name: nix-update
       run: nix run .#update-flake-outputs -- --remote origin ./.
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
