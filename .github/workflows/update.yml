@@ -1,4 +1,4 @@
-name: "nix-update all outputs"
+name: "nix-update"
 on:
   schedule:
     - cron:  '10 5 * * *'

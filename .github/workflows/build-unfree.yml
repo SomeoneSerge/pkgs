@@ -1,4 +1,4 @@
-name: "Build and populate the unfree cache"
+name: "nix-build --arg cudaSupport true"
 on:
   pull_request:
   push:

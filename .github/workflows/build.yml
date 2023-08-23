@@ -1,4 +1,4 @@
-name: "Build and populate cache"
+name: "nix-build"
 on:
   pull_request_target:
     types:
