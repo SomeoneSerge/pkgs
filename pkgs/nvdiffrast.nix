@@ -19,7 +19,7 @@ with cudaPackages;
 
 let
   pname = "nvdiffrast";
-  version = "0.3.0";
+  version = "0.3.1";
 in
 buildPythonPackage rec {
   inherit pname version;
@@ -29,7 +29,7 @@ buildPythonPackage rec {
     owner = "NVLabs";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-erMac+xt5f3dMWu8c3rlpUV/uixUYOimHexwaNq0Uu0=";
+    hash = "sha256-CUni9pRUNyX3erquNYSFOGVKCzK46Pj6n8lkWdIeWqI=";
   };
   patches = [
     (fetchurl {
