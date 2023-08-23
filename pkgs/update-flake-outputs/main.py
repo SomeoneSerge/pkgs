@@ -13,6 +13,7 @@ from typing import Optional
 parser = argparse.ArgumentParser("update-flake-outputs")
 parser.add_argument("git_checkout")
 parser.add_argument("--remote")
+parser.add_argument("--overwrite-existing", action="store_true")
 
 
 def get_flake_outputs(uri: str):
@@ -190,11 +191,14 @@ if __name__ == "__main__":
                         continue
 
                     msg = get_short_msg()
-                    if msg in open_prs:
+                    if not args.overwrite_existing and msg in open_prs:
                         print(f"Skipping because an old PR is already open: {msg}")
                         continue
 
                     git_push_force_set_default(args.remote, branch_name)
+
+                    if msg in open_prs:
+                        continue
                     gh_pr_create(msg)
                 except Exception as e:
                     print(f"Failed to update {name}: {e}")
