@@ -24,7 +24,7 @@
 
 let
   pname = "instant-ngp";
-  version = "unstable-2022-04-07";
+  version = "continuous";
 
   cudatoolkit = symlinkJoin {
     name = "cudatoolkit-root";
