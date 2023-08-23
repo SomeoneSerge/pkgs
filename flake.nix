@@ -1,5 +1,5 @@
 {
-  description = "Some NUR repository";
+  description = "some-pkgs: sci-comp packages that have no place in nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
   outputs = { self, nixpkgs }:
