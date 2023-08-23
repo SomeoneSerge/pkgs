@@ -7,6 +7,7 @@
 , glew
 , glfw
 , IOKit
+, libxcrypt
 , OpenGL
 , pkg-config
 , stdenv
@@ -28,7 +29,9 @@ buildPythonPackage rec {
     mv build cmake-build-local
   '';
   nativeBuildInputs = [ pkg-config cmake ];
-  buildInputs = lib.optionals stdenv.isLinux [
+  buildInputs = [
+    libxcrypt
+  ] ++ lib.optionals stdenv.isLinux [
     xorg.libX11.dev
     xorg.libXrandr.dev
     xorg.libXinerama.dev
