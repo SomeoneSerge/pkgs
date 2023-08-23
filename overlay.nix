@@ -15,7 +15,7 @@ in
   inherit lib;
 
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (final.callPackage ./python-overrides.nix { })
+    (final.callPackage ./pkgs/python-packages/extensions.nix { })
   ];
 
   # Some things we want to expose even outside some-pkgs namespace:
