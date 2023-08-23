@@ -7,7 +7,7 @@
 
 let
   pname = "datasette-render-images";
-  version = "0.3.2";
+  version = "0.4";
 in
 buildPythonPackage {
   inherit pname version;
@@ -19,16 +19,8 @@ buildPythonPackage {
     owner = "simonw";
     repo = pname;
     rev = version;
-    hash = "sha256-/LOC7FormonGmhEp25OgkU9w/eM6fLDk7b5Rv5t1Ix4=";
+    hash = "sha256-hq8FySkT1Zv6PoWFvdjLKWF6Er0dcsVpTz+YsSN70GU=";
   };
-
-  patches = [
-    # Fix: jinja2.Markup no longer exists
-    (fetchurl {
-      url = "https://github.com/simonw/datasette-render-images/commit/f03e193c60eabcd14c128cb54d6030f81a2c0712.patch";
-      hash = "sha256-zD4Un30XaMD799cbnsL/MpNpn5mktyvTOM0dy4O7Qsc=";
-    })
-  ];
 
   propagatedBuildInputs = [
     datasette
