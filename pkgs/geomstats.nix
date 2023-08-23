@@ -13,7 +13,7 @@
 
 let
   pname = "geomstats";
-  version = "2.5.0";
+  version = "2.6.0";
 in
 buildPythonPackage {
   inherit pname version;
@@ -23,7 +23,7 @@ buildPythonPackage {
     owner = "geomstats";
     repo = pname;
     rev = "${version}";
-    hash = "sha256-3FP4pgLMjd1qHcWSkwV8bG+tlxMU3LwKCPfgqOjJfpg=";
+    hash = "sha256-A/NU5kEWhVL3FA3WAGVeMGrPuqbB6Cw5cTbzMzleHjM=";
   };
 
   nativeBuildInputs = [
