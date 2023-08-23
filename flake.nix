@@ -16,8 +16,7 @@
       forAllSystems = f: lib.genAttrs systems (system: f system);
 
       supportsPlatform = system: name: package:
-        let s = builtins.elem system (package.meta.platforms or [ ]);
-        in if s then s else lib.warn "${name} seems to not be support ${system}" s;
+        let s = builtins.elem system (package.meta.platforms or [ ]); in s;
 
       notBroken = name: pkg:
         let
