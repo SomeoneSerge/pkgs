@@ -111,6 +111,7 @@ def git_push_force_set_default(remote, remote_branch):
         [
             "git",
             "push",
+            "--force",
             "-u",
             remote,
             f"HEAD:{remote_branch}",
