@@ -5,6 +5,7 @@ on:
       - opened
     branches:
       - 'master'
+  pull_request:
   push:
     branches:
       - main
