@@ -10,7 +10,7 @@
 
 let
   pname = "geoopt";
-  version = "0.5.0";
+  version = "0.5.1";
 in
 buildPythonPackage {
   inherit pname version;
@@ -19,7 +19,7 @@ buildPythonPackage {
     owner = "geoopt";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-AVnd4KdNECgSqjReyhdF/4eyk4gS+RrTp1y7qqay9oc=";
+    hash = "sha256-AxbZ4I9lWx3JNnfkLHg40RpAwIsKxW2gqtjXG+t+wW8=";
   };
 
   buildInputs = [
