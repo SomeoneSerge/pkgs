@@ -15,24 +15,10 @@
       ];
       forAllSystems = f: lib.genAttrs systems (system: f system);
 
+      defaultPlatforms = [ "x86_64-linux" ];
+
       supportsPlatform = system: name: package:
-        let s = builtins.elem system (package.meta.platforms or [ ]); in s;
-
-      notBroken = name: pkg:
-        let
-          s = (builtins.tryEval (builtins.seq pkg.outPath true)).success;
-          marked = (builtins.tryEval (pkg.meta.broken or false)).value;
-        in
-        if s || marked then s else lib.warn "${name} must have broken dependencies" s;
-
-      isRedist = packages: name: pkg:
-        let
-          isFree = pkg.meta.license.free or true;
-          allowUnfree = packages.config.allowUnfree or false;
-          ok = isFree || allowUnfree;
-        in
-        if ok then ok
-        else lib.warn "not allowed to include ${name}; it's ${if isFree then "free" else "unfree"} and we ${if allowUnfree then "" else "don't "}allow unfree" ok;
+        let s = builtins.elem system (package.meta.platforms or defaultPlatforms); in s;
 
       reservedName = name: builtins.elem name [
         "lib"
@@ -46,8 +32,6 @@
             (name: _: ! reservedName name)
             (name: attr: attr ? type && attr.type == "derivation")
             (supportsPlatform system)
-            (isRedist packages)
-            # notBroken # tryEval is the last
           ];
           f = name: package: builtins.all (f: f name package) filters;
         in
