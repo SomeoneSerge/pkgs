@@ -116,7 +116,6 @@ def git_push_force_set_default(remote, remote_branch):
             f"HEAD:{remote_branch}",
         ],
         check=True,
-        capture_output=True,
     )
 
 
