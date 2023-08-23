@@ -1,4 +1,4 @@
-name: "nix-update all outputs"
+name: "nix flake update"
 on:
   schedule:
     - cron: '0 0 * * 0' # runs weekly on Sunday at 00:00
