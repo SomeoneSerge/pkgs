@@ -3,9 +3,10 @@ on:
   pull_request_target:
     types:
       - opened
+      - reopened
+      - synchronize
     branches:
       - 'master'
-  pull_request:
   push:
     branches:
       - main
