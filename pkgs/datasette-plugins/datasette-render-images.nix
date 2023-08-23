@@ -7,7 +7,7 @@
 
 let
   pname = "datasette-render-images";
-  version = "0.3.2";
+  version = "0.4";
 in
 buildPythonPackage {
   inherit pname version;
@@ -19,7 +19,7 @@ buildPythonPackage {
     owner = "simonw";
     repo = pname;
     rev = version;
-    hash = "sha256-/LOC7FormonGmhEp25OgkU9w/eM6fLDk7b5Rv5t1Ix4=";
+    hash = "sha256-hq8FySkT1Zv6PoWFvdjLKWF6Er0dcsVpTz+YsSN70GU=";
   };
 
   patches = [
