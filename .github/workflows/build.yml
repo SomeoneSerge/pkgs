@@ -51,8 +51,6 @@ jobs:
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
         install_url: https://releases.nixos.org/nix/nix-2.9.1/install
         nix_path: "${{ matrix.nixPath }}"
-    - name: Show nixpkgs version
-      run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
     - name: Setup cachix
       # Don't replace <YOUR_CACHIX_NAME> here!
       if: ${{ matrix.cachixName != '<YOUR_CACHIX_NAME>' }}
@@ -60,6 +58,9 @@ jobs:
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         name: ${{ matrix.cachixName }}
+    - uses: DeterminateSystems/magic-nix-cache-action@v2
+    - name: Show nixpkgs version
+      run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
     - name: Check evaluation
       run: |
         nix-env -f . -qa \* --meta --xml \

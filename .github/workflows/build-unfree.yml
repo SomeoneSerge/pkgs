@@ -46,6 +46,7 @@ jobs:
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_UNFREE }}'
         name: some-unfree
+    - uses: DeterminateSystems/magic-nix-cache-action@v2
     - name: Check evaluation
       run: |
         nix-env -f . -qa \* --meta --xml \
