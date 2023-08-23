@@ -9,14 +9,14 @@
 
 stdenv.mkDerivation rec {
   pname = "cnpypp";
-  version = "2.2.1";
+  version = "2.3.0";
 
   src = fetchFromGitLab {
     domain = "gitlab.iap.kit.edu";
     owner = "mreininghaus";
     repo = "cnpypp";
     rev = "v${version}";
-    hash = "sha256-qwC9FbhKcLZPmY+Xo/3u6DcJv/kpKnvHnuCes11E5iQ=";
+    hash = "sha256-j8vK+niU/H+s2tJ1PphLDjSrgJm0BmruvnJMjJb1OkU=";
   };
   postPatch = ''
     substituteInPlace CMakeLists.txt --replace 'install(TARGETS "cnpy++"' 'install(TARGETS "cnpy++" EXPORT "cnpy++Targets"'
