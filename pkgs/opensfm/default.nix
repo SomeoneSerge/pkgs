@@ -44,7 +44,7 @@ let
 in
 buildPythonPackage rec {
   pname = "OpenSfM";
-  version = "unstable-0.5.1";
+  version = "0.5.1";
 
   src = fetchFromGitHub {
     owner = "mapillary";
