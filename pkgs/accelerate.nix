@@ -1,6 +1,7 @@
 { lib
 , buildPythonPackage
 , fetchFromGitHub
+, psutil
 , pytorch
 , pytestCheckHook
   # for tests
@@ -8,7 +9,8 @@
 }:
 buildPythonPackage rec {
   name = "accelerate";
-  version = "0.6.2";
+  version = "0.22.0";
+  format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "huggingface";
@@ -17,7 +19,10 @@ buildPythonPackage rec {
     hash = "sha256-Fuq13JWUXCG4NEeR5rWn41JDmTI6tyImCrOxss6ekNs=";
   };
 
-  propagatedBuildInputs = [ pytorch ];
+  propagatedBuildInputs = [
+    psutil
+    pytorch
+  ];
 
   checkInputs = [ pytestCheckHook ];
 
