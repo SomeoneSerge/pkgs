@@ -26,5 +26,4 @@ jobs:
     - name: nix-update
       run: nix run .#update-flake-outputs -- --remote origin --overwrite-existing ./.
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         GH_TOKEN: ${{ secrets.GH_PAT }}
