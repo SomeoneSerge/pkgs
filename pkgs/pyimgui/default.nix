@@ -19,13 +19,13 @@
 }:
 buildPythonPackage rec {
   name = "pyimgui";
-  version = "1.4.0";
+  version = "2.0.0";
   src = fetchFromGitHub {
     owner = "pyimgui";
     repo = "pyimgui";
     rev = version;
     fetchSubmodules = true;
-    sha256 = "sha256-H6B7x+sTPy4zy/UHPjKOV6A8u2wjNhAIfkrKJSyJLDY=";
+    sha256 = "sha256-sw/bLTdrnPhBhrnk5yyXCbEK4kMo+PdEvoMJ9aaZbsE=";
   };
   doCheck = false;
   buildPhase = ''
