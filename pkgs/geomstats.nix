@@ -7,6 +7,7 @@
 , joblib
 , pandas
 , scikit-learn
+, setuptools
 , pytestCheckHook
 }:
 
@@ -16,6 +17,7 @@ let
 in
 buildPythonPackage {
   inherit pname version;
+  format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "geomstats";
@@ -23,6 +25,10 @@ buildPythonPackage {
     rev = "${version}";
     hash = "sha256-3FP4pgLMjd1qHcWSkwV8bG+tlxMU3LwKCPfgqOjJfpg=";
   };
+
+  nativeBuildInputs = [
+    setuptools
+  ];
 
   propagatedBuildInputs = [
     scipy
