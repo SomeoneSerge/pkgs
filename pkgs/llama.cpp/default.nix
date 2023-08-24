@@ -7,7 +7,7 @@
 
 stdenv.mkDerivation rec {
   pname = "llama-cpp";
-  version = "master-b8ad1b6";
+  version = "master-6e91a1b";
 
   src = fetchFromGitHub {
     owner = "ggerganov";
