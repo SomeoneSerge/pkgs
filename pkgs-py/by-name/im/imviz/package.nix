@@ -14,10 +14,7 @@
 , xorg
 , glfw
 , glew
-, Cocoa
-, OpenGL
-, CoreVideo
-, IOKit
+, darwin
 }:
 
 let
@@ -82,10 +79,10 @@ buildPythonPackage rec {
     xorg.libXi.dev
     xorg.libXext
   ] ++ lib.optionals stdenv.isDarwin [
-    Cocoa
-    OpenGL
-    CoreVideo
-    IOKit
+    darwin.Cocoa
+    darwin.OpenGL
+    darwin.CoreVideo
+    darwin.IOKit
   ];
   propagatedBuildInputs = [
     pyopengl
