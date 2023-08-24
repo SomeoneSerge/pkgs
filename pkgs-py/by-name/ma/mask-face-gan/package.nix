@@ -65,6 +65,7 @@ buildPythonPackage rec {
   ];
 
   meta = with lib; {
+    broken = true;
     description = "High resolution fine-grained face editing";
     homepage = "https://github.com/MartinPernus/MaskFaceGAN";
     license = licenses.mit;

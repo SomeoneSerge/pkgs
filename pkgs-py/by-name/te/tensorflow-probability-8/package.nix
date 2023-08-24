@@ -119,7 +119,7 @@ buildPythonPackage {
   '';
 
   meta = with lib; {
-    broken = false;
+    broken = true;
     description = "Library for probabilistic reasoning and statistical analysis";
     homepage = "https://www.tensorflow.org/probability/";
     license = licenses.asl20;

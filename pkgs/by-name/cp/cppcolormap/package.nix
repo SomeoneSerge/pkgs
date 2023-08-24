@@ -50,6 +50,7 @@ stdenv.mkDerivation rec {
   SETUPTOOLS_SCM_PRETEND_VERSION = version;
 
   meta = with lib; {
+    broken = true;
     description = "Library with colormaps for C++";
     homepage = "https://github.com/tdegeus/cppcolormap";
     platforms = lib.platforms.unix;

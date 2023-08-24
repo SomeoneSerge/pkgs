@@ -39,6 +39,7 @@ buildPythonPackage rec {
   pythonImportsCheck = [ "trieste" ];
 
   meta = {
+    broken = true;
     maintainers = [ lib.maintainers.SomeoneSerge ];
     license = lib.licenses.asl20;
     description = "A Bayesian optimization toolbox built on TensorFlow";

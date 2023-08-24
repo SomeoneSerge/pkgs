@@ -61,6 +61,7 @@ buildPythonPackage rec {
   '';
 
   meta = with lib; {
+    broken = true;
     description = "Face editing by e4e, text2stylegan,interfacegan,ganspace";
     homepage = "https://github.com/MingtaoGuo/Face-Attribute-Editing-StyleGAN3";
     license = licenses.mit;
