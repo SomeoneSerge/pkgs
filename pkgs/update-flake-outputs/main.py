@@ -87,10 +87,14 @@ def git_worktree(worktree_path, new_branch):
         )
 
 
-def get_head():
+def git_rev_parse(rev):
     return subprocess.run(
-        ["git", "rev-parse", "HEAD"], check=True, capture_output=True
+        ["git", "rev-parse", rev], check=True, capture_output=True
     ).stdout.decode("utf8")
+
+
+def get_head():
+    return git_rev_parse("HEAD")
 
 
 def git_add_update():
@@ -196,7 +200,13 @@ if __name__ == "__main__":
                         print(f"Skipping because an old PR is already open: {msg}")
                         continue
 
-                    git_push_force_set_default(args.remote, branch_name)
+                    try:
+                        remote_changed = new != git_rev_parse(branch_name)
+                    except subprocess.CalledProcessError:
+                        remote_changed = True
+
+                    if remote_changed:
+                        git_push_force_set_default(args.remote, branch_name)
 
                     if msg in open_prs:
                         continue
