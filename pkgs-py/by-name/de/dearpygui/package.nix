@@ -2,13 +2,10 @@
 , buildPythonPackage
 , fetchFromGitHub
 , cmake
-, Cocoa
-, CoreVideo
+, darwin
 , glew
 , glfw
-, IOKit
 , libxcrypt
-, OpenGL
 , pkg-config
 , stdenv
 , xorg
@@ -43,10 +40,10 @@ buildPythonPackage rec {
     glfw
     glew
   ] ++ lib.optionals stdenv.isDarwin [
-    Cocoa
-    OpenGL
-    CoreVideo
-    IOKit
+    darwin.Cocoa
+    darwin.OpenGL
+    darwin.CoreVideo
+    darwin.IOKit
   ];
   dontUseSetuptoolsCheck = true;
   pythonImportsCheck = [

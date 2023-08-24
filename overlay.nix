@@ -51,10 +51,6 @@ in
             pythonPackages = py-final;
           });
 
-          dearpygui = py-final.callPackage ./pkgs-py/by-name/de/dearpygui/package.nix {
-            inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
-          };
-
           instant-ngp = py-final.callPackage ./pkgs-py/by-name/in/instant-ngp/package.nix {
             lark = py-final.lark or py-final.lark-parser;
           };
