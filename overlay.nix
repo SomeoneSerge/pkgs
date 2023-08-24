@@ -9,20 +9,21 @@ let
       githubId = 9720532;
       name = "Sergei K";
     };
+    readByName = import ./read-by-name.nix { lib = lib'; };
+
+    autocallByName = ps: baseDirectory:
+      let
+        files = readByName baseDirectory;
+        packages = lib.mapAttrs
+          (name: file:
+            ps.callPackage file { }
+          )
+          files;
+      in
+      packages;
   };
 
-  readByName = import ./read-by-name.nix { inherit lib; };
-
-  autocall = ps: baseDirectory:
-    let
-      files = readByName baseDirectory;
-      packages = lib.mapAttrs
-        (name: file:
-          ps.callPackage file { }
-        )
-        files;
-    in
-    packages;
+  inherit (lib) readByName autocallByName;
 
   toplevelFiles = readByName ./pkgs/by-name;
   pythonFiles = readByName ./pkgs-py/by-name;
@@ -33,7 +34,7 @@ in
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
     (py-final: py-prev:
       let
-        autocalled = (autocall py-final ./pkgs-py/by-name);
+        autocalled = (autocallByName py-final ./pkgs-py/by-name);
         extra = {
           cppcolormap = py-final.toPythonModule (final.some-pkgs.cppcolormap.override {
             enablePython = true;
@@ -76,7 +77,7 @@ in
   inherit (final.some-pkgs) faiss;
 
   some-pkgs =
-    (autocall final.some-pkgs ./pkgs/by-name) //
+    (autocallByName final.some-pkgs ./pkgs/by-name) //
     {
       inherit (final.python3Packages) some-pkgs-py;
       callPackage = final.lib.callPackageWith (final // final.some-pkgs);
