@@ -12,10 +12,7 @@
 , xorg
 , glfw
 , glew
-, Cocoa
-, OpenGL
-, CoreVideo
-, IOKit
+, darwin
 }:
 buildPythonPackage rec {
   name = "pyimgui";
@@ -56,10 +53,10 @@ buildPythonPackage rec {
     xorg.libXi.dev
     xorg.libXext
   ] ++ lib.optionals stdenv.isDarwin [
-    Cocoa
-    OpenGL
-    CoreVideo
-    IOKit
+    darwin.Cocoa
+    darwin.OpenGL
+    darwin.CoreVideo
+    darwin.IOKit
   ];
   meta = {
     maintainers = [ lib.maintainers.SomeoneSerge ];

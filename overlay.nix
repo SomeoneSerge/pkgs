@@ -51,9 +51,6 @@ in
             pythonPackages = py-final;
           });
 
-          pyimgui = py-final.callPackage ./pkgs-py/by-name/py/pyimgui/package.nix {
-            inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
-          };
           dearpygui = py-final.callPackage ./pkgs-py/by-name/de/dearpygui/package.nix {
             inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
           };
