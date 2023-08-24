@@ -54,7 +54,7 @@
         overlays = [ overlay ];
       });
 
-      newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs);
+      newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs // pkgs.${system}.some-pkgs.some-pkgs-py);
       supportedPkgs = lib.mapAttrs filterUnsupported newAttrs;
 
       outputs = {

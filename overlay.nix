@@ -10,67 +10,80 @@ let
       name = "Sergei K";
     };
   };
+
+  readByName = import ./read-by-name.nix { inherit lib; };
+
+  autocall = ps: baseDirectory:
+    let
+      files = readByName baseDirectory;
+      packages = lib.mapAttrs
+        (name: file:
+          ps.callPackage file { }
+        )
+        files;
+    in
+    packages;
+
+  toplevelFiles = readByName ./pkgs/by-name;
+  pythonFiles = readByName ./pkgs-py/by-name;
 in
 {
   inherit lib;
 
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (final.callPackage ./pkgs/python-packages/extensions.nix { })
+    (py-final: py-prev:
+      let
+        autocalled = (autocall py-final ./pkgs-py/by-name);
+        extra = {
+          cppcolormap = py-final.toPythonModule (final.some-pkgs.cppcolormap.override {
+            enablePython = true;
+            python3Packages = py-final;
+          });
+
+          faiss = py-final.toPythonModule (final.faiss.override {
+            pythonSupport = true;
+            pythonPackages = py-final;
+          });
+
+          some-pkgs-faiss = py-final.toPythonModule (final.some-pkgs.faiss.override {
+            pythonSupport = true;
+            pythonPackages = py-final;
+          });
+
+          imviz = py-final.callPackage ./pkgs-py/by-name/im/imviz/package.nix {
+            inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
+          };
+          pyimgui = py-final.callPackage ./pkgs-py/by-name/py/pyimgui/package.nix {
+            inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
+          };
+          dearpygui = py-final.callPackage ./pkgs-py/by-name/de/dearpygui/package.nix {
+            inherit (final.darwin.apple_sdk.frameworks) Cocoa OpenGL CoreVideo IOKit;
+          };
+
+          instant-ngp = py-final.callPackage ./pkgs-py/by-name/in/instant-ngp/package.nix {
+            lark = py-final.lark or py-final.lark-parser;
+          };
+
+          quad-tree-loftr = py-final.quad-tree-attention.feature-matching;
+        };
+      in
+      autocalled // extra // {
+        some-pkgs-py = lib.mapAttrs (name: _: py-final.${name}) (autocalled // extra);
+      })
   ];
 
   # Some things we want to expose even outside some-pkgs namespace:
   inherit (final.some-pkgs) faiss;
 
   some-pkgs =
+    (autocall final.some-pkgs ./pkgs/by-name) //
     {
-      inherit (final.python3Packages)
-        arxiv-py
-        albumentations
-        cppimport
-        grobid-client-python
-        datasette-render-images
-        instant-ngp
-        nvdiffrast
-        opensfm
-        ezy-expecttest
-        imviz pyimgui dearpygui
-        kornia
-        accelerate
-        geomstats
-        geoopt
-        gpytorch
-        check-shapes
-        gpflow
-        gpflux
-        timm
-        trieste
-        lpips
-        mask-face-gan
-        qudida
-        quad-tree-attention
-        quad-tree-loftr
-        pynvjpeg
-        openai-clip
-        face-attribute-editing-stylegan3
-        safetensors;
-
+      inherit (final.python3Packages) some-pkgs-py;
       callPackage = final.lib.callPackageWith (final // final.some-pkgs);
 
-      cnpy = final.callPackage ./pkgs/cnpy.nix { };
-      cnpyxx = final.callPackage ./pkgs/cnpyxx.nix { };
-      cppcolormap = final.callPackage ./pkgs/cppcolormap.nix { };
-
-      alpaca-cpp = final.callPackage ./pkgs/alpaca-cpp.nix { };
-      llama-cpp = final.some-pkgs.callPackage ./pkgs/llama.cpp { };
-
-      faiss = final.callPackage ./pkgs/faiss {
+      faiss = final.callPackage ./pkgs/by-name/fa/faiss {
         pythonPackages = final.python3Packages;
         swig = final.swig4;
       };
-
-      lustre = final.callPackage ./pkgs/lustre { };
-      zotfile = final.callPackage ./pkgs/zotfile.nix { };
-
-      update-flake-outputs = final.callPackage ./pkgs/update-flake-outputs { };
     };
 }
