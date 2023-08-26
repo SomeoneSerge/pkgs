@@ -4,9 +4,18 @@
 , cmake
 , sway
 , iio-sensor-proxy
+, offsetDegrees ? 0
 , outputName ? "eDP-1"
 }:
 
+let
+  rem = top: bot: let k = builtins.div top bot; in top - k * bot;
+  rotBase.normal = 0;
+  rotBase.right-up = 90;
+  rotBase.bottom-up = 180;
+  rotBase.left-up = 270;
+  rot = builtins.mapAttrs (name: value: rem (value + offsetDegrees) 360) rotBase;
+in
 stdenv.mkDerivation rec {
   pname = "sway-autorotate";
   version = "unstable-2023-05-16";
@@ -28,6 +37,10 @@ stdenv.mkDerivation rec {
       -e 's|swaymsg|${sway}/bin/swaymsg|g' \
       -e 's|monitor-sensor|${iio-sensor-proxy}/bin/monitor-sensor|g' \
       -e 's|eDP-1|${outputName}|g' \
+      -e 's|"normal", "${toString rotBase.normal}"|"normal", "${toString rot.normal}"|' \
+      -e 's|"right-up", "${toString rotBase.right-up}"|"right-up", "${toString rot.right-up}"|' \
+      -e 's|"bottom-up", "${toString rotBase.bottom-up}"|"bottom-up", "${toString rot.bottom-up}"|' \
+      -e 's|"left-up", "${toString rotBase.left-up}"|"left-up", "${toString rot.left-up}"|' \
       autorotate.cpp
   '';
 
