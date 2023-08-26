@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
     cp ${./CMakeLists.txt} ./CMakeLists.txt
     sed -i \
       -e 's|swaymsg|${sway}/bin/swaymsg|g' \
-      -e 's|monitor-sensor|${pkgs.iio-sensor-proxy}/bin/monitor-sensor|g' \
+      -e 's|monitor-sensor|${iio-sensor-proxy}/bin/monitor-sensor|g' \
       autorotate.cpp
   '';
 
