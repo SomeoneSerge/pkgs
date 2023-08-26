@@ -4,6 +4,7 @@
 , cmake
 , sway
 , iio-sensor-proxy
+, outputName ? "eDP-1"
 }:
 
 stdenv.mkDerivation rec {
@@ -26,6 +27,7 @@ stdenv.mkDerivation rec {
     sed -i \
       -e 's|swaymsg|${sway}/bin/swaymsg|g' \
       -e 's|monitor-sensor|${iio-sensor-proxy}/bin/monitor-sensor|g' \
+      -e 's|eDP-1|${outputName}|g' \
       autorotate.cpp
   '';
 
