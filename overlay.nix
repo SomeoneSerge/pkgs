@@ -26,7 +26,7 @@ let
   inherit (lib) readByName autocallByName;
 
   toplevelFiles = readByName ./pkgs/by-name;
-  pythonFiles = readByName ./pkgs-py/by-name;
+  pythonFiles = readByName ./python-packages/by-name;
 in
 {
   inherit lib;
@@ -34,7 +34,7 @@ in
   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
     (py-final: py-prev:
       let
-        autocalled = (autocallByName py-final ./pkgs-py/by-name);
+        autocalled = (autocallByName py-final ./python-packages/by-name);
         extra = {
           cppcolormap = py-final.toPythonModule (final.some-pkgs.cppcolormap.override {
             enablePython = true;
@@ -51,7 +51,7 @@ in
             pythonPackages = py-final;
           });
 
-          instant-ngp = py-final.callPackage ./pkgs-py/by-name/in/instant-ngp/package.nix {
+          instant-ngp = py-final.callPackage ./python-packages/by-name/in/instant-ngp/package.nix {
             lark = py-final.lark or py-final.lark-parser;
           };
 
