@@ -7,4 +7,4 @@ let
     // overlay final pkgs
     // { callPackage = pkgs.lib.callPackageWith final; };
 in
-final.some-pkgs // final.some-pkgs-py
+final.some-pkgs
