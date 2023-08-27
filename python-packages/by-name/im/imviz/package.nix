@@ -79,9 +79,9 @@ buildPythonPackage rec {
     xorg.libXi.dev
     xorg.libXext
   ] ++ lib.optionals stdenv.isDarwin [
-    darwin.Cocoa
-    darwin.OpenGL
-    darwin.CoreVideo
+    darwin.apple_sdk.frameworks.Cocoa
+    darwin.apple_sdk.frameworks.CoreVideo
+    darwin.apple_sdk.frameworks.OpenGL
     darwin.IOKit
   ];
   propagatedBuildInputs = [
