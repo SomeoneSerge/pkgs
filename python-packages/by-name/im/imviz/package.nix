@@ -101,6 +101,7 @@ buildPythonPackage rec {
   '';
 
   meta = {
+    broken = stdenv.isDarwin;
     maintainers = [ lib.maintainers.SomeoneSerge ];
     license = lib.licenses.mit;
     description = "Python bindings for imgui+implot";
