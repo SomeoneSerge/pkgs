@@ -31,7 +31,7 @@ in
 {
   inherit lib;
 
-  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+  pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
     (py-final: py-prev:
       let
         autocalled = (autocallByName py-final ./python-packages/by-name);
@@ -77,4 +77,14 @@ in
         swig = final.swig4;
       };
     };
+} // lib'.optionals (lib'.versionOlder lib'.version "23.11") {
+  # 2023-08-28: NUR still uses the 23.05 channel which doesen't handle pythonPackagesExtensions
+  python3 =
+    let
+      self = prev.python3.override {
+        packageOverrides = lib'.composeManyExtensions final.pythonPackagesExtensions;
+        inherit self;
+      }; in
+    self;
+  python3Packages = final.python3.pkgs;
 }
