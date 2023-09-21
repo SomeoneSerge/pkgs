@@ -1,10 +1,10 @@
 { lib, config, pkgs, ... }:
 let
   inherit (lib) types;
-  inherit (pkgs.some-util.types) remoteFile;
+  inherit (pkgs.some-util.types) RemoteFile;
   Model = types.submodule {
     options.weights = lib.mkOption {
-      type = types.attrsOf remoteFile;
+      type = types.attrsOf RemoteFile;
     };
   };
 in
