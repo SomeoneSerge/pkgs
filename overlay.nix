@@ -1,27 +1,7 @@
 final: prev:
 let
   lib' = prev.lib;
-  lib = lib'.recursiveUpdate lib' {
-    maintainers.SomeoneSerge = {
-      email = "sergei.kozlukov@aalto.fi";
-      matrix = "@ss:someonex.net";
-      github = "SomeoneSerge";
-      githubId = 9720532;
-      name = "Sergei K";
-    };
-    readByName = import ./read-by-name.nix { lib = lib'; };
-
-    autocallByName = ps: baseDirectory:
-      let
-        files = readByName baseDirectory;
-        packages = lib.mapAttrs
-          (name: file:
-            ps.callPackage file { }
-          )
-          files;
-      in
-      packages;
-  };
+  lib = import ./extend-lib.nix prev.lib;
 
   inherit (lib) readByName autocallByName;
 
@@ -84,7 +64,8 @@ in
       self = prev.python3.override {
         packageOverrides = lib'.composeManyExtensions final.pythonPackagesExtensions;
         inherit self;
-      }; in
+      };
+    in
     self;
   python3Packages = final.python3.pkgs;
 }
