@@ -9,7 +9,9 @@ let
       name = "Sergei K";
     };
 
-    readByName = import ./read-by-name.nix { inherit lib; };
+    types = import ./types.nix { lib = lib'; };
+
+    readByName = import ../read-by-name.nix { lib = lib'; };
 
     autocallByName = ps: baseDirectory:
       let

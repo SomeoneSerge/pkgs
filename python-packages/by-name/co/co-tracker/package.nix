@@ -48,8 +48,8 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "cotracker" ];
 
-  # E.g. .#pkgsUnfree.python3Packages.co-tracker.passthru.data.weights.stride_4_wind_8.package
-  passthru.data = callPackage ./data.nix { };
+  # E.g. .#pkgsUnfree.python3Packages.co-tracker.passthru.datasets.config.weights.stride_4_wind_8.package
+  passthru.datasets = callPackage ./data.nix { };
 
   meta = with lib; {
     description = "CoTracker is a model for tracking any point (pixel) on a video";

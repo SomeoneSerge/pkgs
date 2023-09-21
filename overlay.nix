@@ -1,7 +1,7 @@
 final: prev:
 let
   lib' = prev.lib;
-  lib = import ./extend-lib.nix prev.lib;
+  lib = import ./lib/extend-lib.nix prev.lib;
 
   inherit (lib) readByName autocallByName;
 
@@ -39,12 +39,14 @@ in
         };
       in
       autocalled // extra // {
-        some-pkgs-py = lib.mapAttrs (name: _: py-final.${name}) (autocalled // extra);
+        some-pkgs-py = lib'.mapAttrs (name: _: py-final.${name}) (autocalled // extra);
       })
   ];
 
   # Some things we want to expose even outside some-pkgs namespace:
   inherit (final.some-pkgs) faiss;
+
+  some-lib = import ./lib/extend-lib.nix prev.lib;
 
   some-pkgs =
     (autocallByName final.some-pkgs ./pkgs/by-name) //
@@ -56,7 +58,20 @@ in
         pythonPackages = final.python3Packages;
         swig = final.swig4;
       };
+
+      fetchdata = { urls, hash, ... }: final.fetchurl {
+        inherit urls hash;
+        recursiveHash = true;
+        downloadToTemp = true;
+        postFetch = ''
+          mkdir -p "$out/data"
+          mv "$downloadedFile" "$out/data/$name"
+        '';
+      };
     };
+
+  some-datasets = import ./datasets { lib = final.lib; pkgs = final; };
+
 } // lib'.optionals (lib'.versionOlder lib'.version "23.11") {
   # 2023-08-28: NUR still uses the 23.05 channel which doesen't handle pythonPackagesExtensions
   python3 =
