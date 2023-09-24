@@ -225,6 +225,7 @@ if __name__ == "__main__":
                             "Branch {branch_name} already at {new}. Not pushing",
                             file=stderr,
                         )
+                        continue
 
                     if msg in open_prs:
                         continue
