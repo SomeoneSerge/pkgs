@@ -225,10 +225,9 @@ if __name__ == "__main__":
                         git_push_force_set_default(args.remote, branch_name)
                     else:
                         print(
-                            "Branch {branch_name} already at {new}. Not pushing",
+                            f"Branch {branch_name} already at {new}. Not pushing",
                             file=stderr,
                         )
-                        continue
 
                     if msg in open_prs:
                         continue
