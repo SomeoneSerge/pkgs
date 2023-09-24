@@ -155,7 +155,7 @@ def gh_pr_create(title, remote_branch=None):
         args,
         check=False,
         shell=False,
-        capture_output=True
+        capture_output=True,
     )
 
     if p.returncode != 0:
