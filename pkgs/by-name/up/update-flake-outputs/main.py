@@ -114,15 +114,17 @@ def git_commit_if_any(message):
 
 
 def git_push_force_set_default(remote, remote_branch):
+    args = [
+        "git",
+        "push",
+        "--force",
+        "-u",
+        remote,
+        f"HEAD:{remote_branch}",
+    ]
+    print(f"Executing {args}", file=stderr)
     subprocess.run(
-        [
-            "git",
-            "push",
-            "--force",
-            "-u",
-            remote,
-            f"HEAD:{remote_branch}",
-        ],
+        args,
         check=True,
     )
 
@@ -218,9 +220,16 @@ if __name__ == "__main__":
 
                     if remote_changed:
                         git_push_force_set_default(args.remote, branch_name)
+                    else:
+                        print(
+                            "Branch {branch_name} already at {new}. Not pushing",
+                            file=stderr,
+                        )
 
                     if msg in open_prs:
                         continue
-                    gh_pr_create(msg)
+
+                    gh_pr_create(msg, remote_branch=branch_name)
+
                 except Exception as e:
                     print(f"Failed to update {name}: {e}")
