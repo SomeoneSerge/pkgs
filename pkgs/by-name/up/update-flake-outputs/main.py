@@ -95,7 +95,7 @@ def git_worktree(worktree_path, new_branch, head_rev=None):
 def git_rev_parse(rev):
     return subprocess.run(
         ["git", "rev-parse", rev], check=True, capture_output=True
-    ).stdout.decode("utf8")
+    ).stdout.decode("utf8").strip()
 
 
 def get_head():
