@@ -67,16 +67,19 @@ def cwd(new_cwd: Optional[str | Path]):
 
 
 @contextmanager
-def git_worktree(worktree_path, new_branch):
+def git_worktree(worktree_path, new_branch, head_rev=None):
+    args = [
+        "git",
+        "worktree",
+        "add",
+        "-B",
+        new_branch,
+        worktree_path,
+    ]
+    if head_rev is not None:
+        args.append(head_rev)
     p = subprocess.run(
-        [
-            "git",
-            "worktree",
-            "add",
-            "-B",
-            new_branch,
-            worktree_path,
-        ],
+        args,
         check=True,
     )
     try:
@@ -199,7 +202,7 @@ if __name__ == "__main__":
             new_checkout = Path(td, name)
 
             branch_name = f"update-flake-outputs/{name}"
-            with git_worktree(new_checkout, branch_name):
+            with git_worktree(new_checkout, branch_name, "HEAD"):
                 try:
                     old = get_head()
                     nix_update(name)
