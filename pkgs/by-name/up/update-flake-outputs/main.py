@@ -155,10 +155,13 @@ def gh_pr_create(title, remote_branch=None):
         args,
         check=False,
         shell=False,
+        capture_output=True
     )
 
     if p.returncode != 0:
+        print(f"{args} has failed:")
         print(textwrap.indent(p.stdout.decode("utf8"), prefix=" " * 4), file=stderr)
+        print(textwrap.indent(p.stderr.decode("utf8"), prefix=" " * 4), file=stderr)
 
     p.check_returncode()
     return p.stdout.decode("utf8")
