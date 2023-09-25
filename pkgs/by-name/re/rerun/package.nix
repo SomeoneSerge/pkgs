@@ -49,7 +49,7 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  cargoBuildFeatures = [
+  buildFeatures = [
     "analytics"
     "glam"
     "image"
