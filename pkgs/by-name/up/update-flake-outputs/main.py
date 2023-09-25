@@ -93,9 +93,11 @@ def git_worktree(worktree_path, new_branch, head_rev=None):
 
 
 def git_rev_parse(rev):
-    return subprocess.run(
-        ["git", "rev-parse", rev], check=True, capture_output=True
-    ).stdout.decode("utf8").strip()
+    return (
+        subprocess.run(["git", "rev-parse", rev], check=True, capture_output=True)
+        .stdout.decode("utf8")
+        .strip()
+    )
 
 
 def get_head():
@@ -211,9 +213,15 @@ if __name__ == "__main__":
                     if new == old:
                         continue
 
+                    print(f"old: {old}", file=stderr)
+                    print(f"new: {new}", file=stderr)
+
                     msg = get_short_msg()
                     if not args.overwrite_existing and msg in open_prs:
-                        print(f"Skipping because an old PR is already open: {msg}")
+                        print(
+                            f"Skipping because an old PR is already open: {msg}",
+                            file=stderr,
+                        )
                         continue
 
                     try:
