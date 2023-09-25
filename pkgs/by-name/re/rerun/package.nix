@@ -62,6 +62,8 @@ rustPlatform.buildRustPackage rec {
     "rerun"
   ];
 
+  cargoTestFlags = cargoBuildFlags;
+
   nativeBuildInputs = [
     binaryen
     cargo-binutils # rust-lld
