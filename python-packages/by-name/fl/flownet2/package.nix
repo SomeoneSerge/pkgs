@@ -126,23 +126,23 @@ let
         weights = {
           FlowNet2 = {
             urls = [ ];
-            hash = "sha256-vDD1T3aqTHJvqtqByf5eYtoiv+Rn8dZbrNYTumvlPnM=";
+            hash = "sha256-QwVZYQqiCqCc+EbDTQAjQC7BIhJRLl31bTio6kfjFBw=";
             cid = "QmWAsrdgQt9J7eDxswiujVQCjkNY1FLj98g8nY5vcmcdgd";
           };
           FlowNet2-C = {
             urls = [ ];
             # FIXME: just an sha256sum run on the file, not the recursive thing...
-            hash = "sha256-6fk5ma5fXtG6NFK13JSMOBRrSL4CjqCQ1ro7jBiFtj8=";
+            hash = "sha256-NolgSnbGbHePFqmKx1aknCC9uSJPRs/H7udpVSZqQn0=";
             cid = "QmaR7UJvNhiEu5zF2jLpZEY4GurarjcMReV1jkx7sosXvw";
           };
           FlowNet2-CSS = {
             urls = [ ];
-            hash = "sha256-yQSJRr4X5QRkw+KSmi+85hlSixH5sZ+VLjeMi3CAjbo=";
+            hash = "sha256-kNwNMqfhBE1Ipfqy3qOOCBQ4IcXoMWK7RuU0N4q6ozs=";
             cid = "QmU3vAEPQxPdbDXhVCwp9AgwjqwFT3Vcb2KD4TWirwG3KK";
           };
           FlowNet2-CSS-ft-sd = {
             urls = [ ];
-            hash = "sha256-2JIrrR5M9rZ+z9pQsvyTgRy+QqI5HT1MpRHKM8lZKck=";
+            hash = "sha256-BdWohreHltpNHQTaiDw9PfrvuD7cJHtboeOoO4Xd50M=";
             cid = "QmakYwRpxQumwftTPs43DpYw6AC26gWUk5UwhT44GK8jKh";
           };
         };
