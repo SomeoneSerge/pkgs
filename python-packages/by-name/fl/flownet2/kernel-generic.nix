@@ -37,9 +37,9 @@ buildPythonPackage rec {
     which
   ];
   buildInputs = [
+    pybind11
   ];
   propagatedBuildInputs = [
-    pybind11
     torch
   ];
 
