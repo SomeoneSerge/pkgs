@@ -3,11 +3,15 @@
 with lib;
 with types;
 {
-  RemoteFile = submodule ({ config, ... }: {
+  RemoteFile = submodule ({ config, name, ... }: {
+    options.name = mkOption {
+      type = str;
+      default = name;
+    };
     options.urls = mkOption { type = listOf str; };
     options.hash = mkOption {
-      type = nullOr str;
-      default = null;
+      type = str;
+      default = lib.fakeHash;
     };
     options.cid = mkOption {
       type = nullOr str;

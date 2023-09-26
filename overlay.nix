@@ -59,8 +59,8 @@ in
         swig = final.swig4;
       };
 
-      fetchdata = { urls, hash, ... }: final.fetchurl {
-        inherit urls hash;
+      fetchdata = { urls, hash, name, ... }: final.fetchurl {
+        inherit urls hash name;
         recursiveHash = true;
         downloadToTemp = true;
         postFetch = ''
