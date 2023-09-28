@@ -14,7 +14,8 @@ in
   pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
     (py-final: py-prev:
       let
-        autocalled = (autocallByName py-final ./python-packages/by-name);
+        scope = py-final.some-pkgs-py;
+        autocalled = (autocallByName scope ./python-packages/by-name);
         extra = {
           cppcolormap = py-final.toPythonModule (final.some-pkgs.cppcolormap.override {
             enablePython = true;
@@ -31,15 +32,17 @@ in
             pythonPackages = py-final;
           });
 
-          instant-ngp = py-final.callPackage ./python-packages/by-name/in/instant-ngp/package.nix {
+          instant-ngp = scope.callPackage ./python-packages/by-name/in/instant-ngp/package.nix {
             lark = py-final.lark or py-final.lark-parser;
           };
 
-          quad-tree-loftr = py-final.quad-tree-attention.feature-matching;
+          quad-tree-loftr = scope.quad-tree-attention.feature-matching;
         };
       in
       autocalled // extra // {
-        some-pkgs-py = lib'.mapAttrs (name: _: py-final.${name}) (autocalled // extra);
+        some-pkgs-py = (lib'.mapAttrs (name: _: py-final.${name}) (autocalled // extra)) // {
+          callPackage = py-final.newScope (py-final // final.some-pkgs // scope);
+        };
       })
   ];
 

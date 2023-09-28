@@ -24,30 +24,15 @@
 , videoflow
 , which
 , yacs
+, fetchtimm
 }:
 
 let
-  hubCache = runCommand "videoflow-hub-cache"
-    {
-      nativeBuildInputs = [
-        (python.withPackages (ps: with ps; [
-          timm
-          torch
-          torchvision
-        ]))
-      ];
-      outputHash = "sha256-rwyFEPrW5JbUXg3NTxclpSTVXbcKlNxaXfJMog92daE=";
-      outputHashAlgo = "sha256";
-      outputHashMode = "recursive";
-    }
-    ''
-      export HUGGINGFACE_HUB_CACHE=$out/data/huggingface/
-      mkdir -p "$HUGGINGFACE_HUB_CACHE"
-      python << EOF
-      import timm
-      timm.create_model("twins_svt_large", pretrained=True)
-      EOF
-    '';
+  hubCache = fetchtimm {
+    name = "videoflow-hub-cache";
+    modelNames = [ "twins_svt_large" ];
+    outputHash = "sha256-rwyFEPrW5JbUXg3NTxclpSTVXbcKlNxaXfJMog92daE=";
+  };
 
   corr_kernel = buildPythonPackage {
     pname = "videoflow-alt-cuda-corr";
