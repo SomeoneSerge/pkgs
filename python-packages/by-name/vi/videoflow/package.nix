@@ -25,6 +25,7 @@
 , which
 , yacs
 , fetchtimm
+, torch-kernel-generic
 }:
 
 let
@@ -34,35 +35,11 @@ let
     outputHash = "sha256-rwyFEPrW5JbUXg3NTxclpSTVXbcKlNxaXfJMog92daE=";
   };
 
-  corr_kernel = buildPythonPackage {
+  corr_kernel = torch-kernel-generic {
     pname = "videoflow-alt-cuda-corr";
     inherit (videoflow) version;
 
     src = "${videoflow.src}/alt_cuda_corr";
-
-    env.CUDA_HOME = symlinkJoin {
-      name = "cuda-unsplit";
-      paths = [
-        buildPackages.cudaPackages.cuda_nvcc
-        cudaPackages.cuda_cccl
-        cudaPackages.cuda_cudart
-        cudaPackages.libcublas
-        cudaPackages.libcusolver
-        cudaPackages.libcusparse
-      ];
-    };
-    env.TORCH_CUDA_ARCH_LIST = "${lib.concatStringsSep ";" torch.cudaCapabilities}";
-
-    nativeBuildInputs = [
-      cudaPackages.backendStdenv.cc
-      which
-    ];
-    buildInputs = [
-      pybind11
-    ];
-    propagatedBuildInputs = [
-      torch
-    ];
 
     pythonImportsCheck = [
       "alt_cuda_corr"

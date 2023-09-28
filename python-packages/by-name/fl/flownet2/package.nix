@@ -14,16 +14,17 @@
 , protobuf
 , python
 , requests
+, runUnderPdb ? false
 , scikit-image
 , scikit-learn
 , seaborn
 , setproctitle
+, some-datasets
 , stdenv
 , tensorboardx
 , torch
+, torch-kernel-generic
 , tqdm
-, runUnderPdb ? false
-, some-datasets
 }:
 
 let
@@ -157,29 +158,36 @@ let
         platforms = platforms.all;
       };
     };
-  resample2d = callPackage
-    ./kernel-generic.nix
-    {
-      inherit (flownet2) version;
-      pname = "flownet2-resample2d";
-      src = "${flownet2.src}/networks/resample2d_package";
-      description = "FlowNet 2.0's resample2d package";
-    };
-  correlation = callPackage
-    ./kernel-generic.nix
-    {
-      inherit (flownet2) version;
-      pname = "flownet2-correlation";
-      src = "${flownet2.src}/networks/correlation_package";
-      description = "FlowNet 2.0's correlation package";
-    };
-  channelnorm = callPackage
-    ./kernel-generic.nix
-    {
-      inherit (flownet2) version;
-      pname = "flownet2-channelnorm";
-      src = "${flownet2.src}/networks/channelnorm_package";
-      description = "FlowNet 2.0's channelnorm package";
-    };
+  kernelArgs.postPatch = ''
+    sed -i '/cxx_args =/{ x; a cxx_args = [ "-std=c++14" ]
+      }' setup.py
+  '';
+  resample2d =
+    torch-kernel-generic
+      {
+        inherit (flownet2) version;
+        inherit (kernelArgs) postPatch;
+        pname = "flownet2-resample2d";
+        src = "${flownet2.src}/networks/resample2d_package";
+        meta = flownet2.meta // { description = "FlowNet 2.0's resample2d package"; };
+      };
+  correlation =
+    torch-kernel-generic
+      {
+        inherit (flownet2) version;
+        inherit (kernelArgs) postPatch;
+        pname = "flownet2-correlation";
+        src = "${flownet2.src}/networks/correlation_package";
+        meta = flownet2.meta // { description = "FlowNet 2.0's correlation package"; };
+      };
+  channelnorm =
+    torch-kernel-generic
+      {
+        inherit (flownet2) version;
+        inherit (kernelArgs) postPatch;
+        pname = "flownet2-channelnorm";
+        src = "${flownet2.src}/networks/channelnorm_package";
+        meta = flownet2.meta // { description = "FlowNet 2.0's channelnorm package"; };
+      };
 in
 flownet2
