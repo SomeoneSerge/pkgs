@@ -15,6 +15,7 @@
 , torchaudio
 , torchvision
 , tqdm
+, some-util
 }:
 
 buildPythonPackage rec {
@@ -34,27 +35,13 @@ buildPythonPackage rec {
       dirSubmodules = [ "networks" "loaders" "preprocessing" ];
       fileSubmodules = [ "config" "criterion" "train" "trainer" "util" "viz" ];
 
-      moduleNames = dirSubmodules ++ fileSubmodules;
-
-      submoduleFilesList = map (x: "${x}.py") fileSubmodules;
-      submoduleDirsList = map (x: "${x}/") dirSubmodules;
-
-      submoduleFiles = lib.concatStringsSep " " (map (x: ''"${x}"'') submoduleFilesList);
-      submoduleDirs = lib.concatStringsSep " " (map (x: ''"${x}"'') submoduleDirsList);
-      submoduleRegex = lib.concatStringsSep ''\|'' (map (x: ''\b${x}\b'') moduleNames);
+      prefix = some-util.prefixPythonSubmodules { inherit pname dirSubmodules fileSubmodules; };
     in
     ''
       cat ${./pyproject.toml} > pyproject.toml
 
-      find -iname '*.py' -exec \
-        sed -i \
-          -e 's/^\(\s*import .*\)\(${submoduleRegex}\)\(.*\)$/\1${pname}.\2\3/' \
-          -e 's/^\(\s*\)from \(${submoduleRegex}\)/\1from ${pname}.\2/' \
-          '{}' '+'
-
-      mkdir src/${pname} -p
-      mv ${submoduleFiles} ${submoduleDirs} \
-        src/${pname}/
+      ${prefix.sed}
+      ${prefix.mv}
     '';
 
   nativeBuildInputs = [
