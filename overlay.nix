@@ -58,16 +58,6 @@ in
         pythonPackages = final.python3Packages;
         swig = final.swig4;
       };
-
-      fetchdata = { urls, hash, name, ... }: final.fetchurl {
-        inherit urls hash name;
-        recursiveHash = true;
-        downloadToTemp = true;
-        postFetch = ''
-          mkdir -p "$out/data"
-          mv "$downloadedFile" "$out/data/$name"
-        '';
-      };
     };
 
   some-datasets = import ./datasets { lib = final.lib; pkgs = final; };
