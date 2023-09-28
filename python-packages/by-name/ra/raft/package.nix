@@ -3,6 +3,7 @@
 , fetchFromGitHub
 , scipy
 , setuptools
+, some-datasets
 , some-util
 , stdenv
 , torch-kernel-generic
@@ -80,8 +81,25 @@ let
       "${pname}.core.update"
     ];
 
-    passthru = {
+    passthru = rec {
       inherit alt_cuda_kernel;
+      datasetsMerged = some-datasets.extendModules {
+        modules = [{
+          models.raft = { inherit weights; };
+        }];
+      };
+      weights = {
+        default = {
+          name = "${pname}-models.zip";
+          urls = [
+            # Source: https://github.com/princeton-vl/RAFT/blob/3fa0bb0a9c633ea0a9bb8a79c576b6785d4e6a02/download_models.sh#L2
+            # Fails with 409
+            "https://dl.dropboxusercontent.com/s/4j4z58wuv8o0mfz/models.zip"
+          ];
+          hash = "sha256-GLSDkdRHTFkRzHwbwWmqb2yUByoc1SD0TX7zCgiy0R4=";
+          cid = "QmdATn2Fmzmjo82U3qTFP123y55i7jKVoZe44khCTtZfew";
+        };
+      };
     };
 
     meta = with lib; {
