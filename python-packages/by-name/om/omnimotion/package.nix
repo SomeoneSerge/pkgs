@@ -1,4 +1,5 @@
 { lib
+, bash
 , buildPythonPackage
 , configargparse
 , fetchFromGitHub
@@ -7,15 +8,16 @@
 , kornia
 , matplotlib
 , opencv4
+, python
 , scipy
 , setuptools
+, some-util
 , stdenv
 , tensorboardx
 , torch
 , torchaudio
 , torchvision
 , tqdm
-, some-util
 }:
 
 buildPythonPackage rec {
@@ -61,6 +63,19 @@ buildPythonPackage rec {
     torchvision
     tqdm
   ];
+
+  postFixup = ''
+    mkdir -p $out/bin
+
+    buildPythonPath "$out $pythonPath"
+
+    cat << EOF > $out/bin/${pname}-viz
+    #!${lib.getExe bash}
+    export PYTHONPATH=\$PYTHONPATH:$program_PYTHONPATH
+    ${lib.getExe python} -m omnimotion.viz \$@
+    EOF
+    chmod a+x $out/bin/${pname}-viz
+  '';
 
   pythonImportsCheck = [
     "omnimotion.config"
