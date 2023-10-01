@@ -1,5 +1,6 @@
 { lib
 , buildPythonPackage
+, fetchzip
 , fetchFromGitHub
 , scipy
 , setuptools
@@ -83,11 +84,11 @@ let
 
     passthru = rec {
       inherit alt_cuda_kernel;
-      datasetsMerged = some-datasets.extendModules {
+      merged = (some-datasets.extendModules {
         modules = [{
           models.raft = { inherit weights; };
         }];
-      };
+      }).config;
       weights = {
         default = {
           name = "${pname}-models.zip";
@@ -96,8 +97,12 @@ let
             # Fails with 409
             "https://dl.dropboxusercontent.com/s/4j4z58wuv8o0mfz/models.zip"
           ];
-          hash = "sha256-GLSDkdRHTFkRzHwbwWmqb2yUByoc1SD0TX7zCgiy0R4=";
+          hash = "sha256-Ah5YnOeGdTVO93BN0yhqf6gQZENc/BNll23oWvZdngo=";
           cid = "QmdATn2Fmzmjo82U3qTFP123y55i7jKVoZe44khCTtZfew";
+          fetcher = { urls, hash, ... }: fetchzip {
+            inherit urls hash;
+            extension = ".zip";
+          };
         };
       };
     };
