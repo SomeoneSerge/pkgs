@@ -277,14 +277,16 @@ buildPythonPackage rec {
               raft
             ]))
           ];
+          outputs = [ "out" "logs" ];
           requiredSystemFeatures = [ "require-cuda" ];
         }
         ''
           python -m omnimotion.train \
             --config ${omnimotion.configs}/data/omnimotion/default.txt \
             --data_dir "${tests.preprocess-sintel}"
-          mkdir $out/
-          cp * $out/
+          ls -l
+          cp -rf out $out
+          cp -rf logs $log
         '';
   };
 
