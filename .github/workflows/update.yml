@@ -13,7 +13,7 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
     - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@v4
+      uses: DeterminateSystems/nix-installer-action@v5
       with:
         github-token: ${{ secrets.GH_PAT }}
     - uses: DeterminateSystems/magic-nix-cache-action@v2
