@@ -145,9 +145,9 @@ stdenv.mkDerivation {
     ls -la usr/
   '';
 
-  meta.platforms = [ "x86_64-linux" ];
   meta.description = "KGB-hijacked e-signature tools for interacting with the Russian tax authorities";
   meta.license = lib.licenses.unfree // { shortName = "Crypto-Pro"; };
   meta.maintainers = [ lib.maintainers.SomeoneSerge ];
+  meta.platforms = [ "x86_64-linux" ];
   meta.sourceProvenance = [ lib.sourceTypes.binaryNative ];
 }
