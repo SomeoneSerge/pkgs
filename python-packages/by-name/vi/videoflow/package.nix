@@ -193,7 +193,7 @@ let
         tests.run-inference = runCommand "videoflow-run-inference"
           {
             nativeBuildInputs = [ videoflow ];
-            requiredSystemFeatures = [ "require-cuda" ];
+            requiredSystemFeatures = [ "cuda" ];
           } ''
           export HUGGINGFACE_HUB_CACHE=${hubCache}/data/huggingface
           ln -s "${datasetsMerged.config.models.videoflow.weights.MOF_sintel.package}/data" VideoFlow_ckpt

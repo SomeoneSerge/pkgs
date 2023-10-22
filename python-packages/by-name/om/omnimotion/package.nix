@@ -210,7 +210,7 @@ buildPythonPackage rec {
           runCommand "omnimotion-viz-results"
             {
               nativeBuildInputs = [ (python.withPackages (ps: [ ps.omnimotion ])) ];
-              requiredSystemFeatures = [ "require-cuda" ];
+              requiredSystemFeatures = [ "cuda" ];
               passthru = { inherit viz-args; };
             }
             ''
@@ -244,7 +244,7 @@ buildPythonPackage rec {
                   raft
                 ]))
               ];
-              requiredSystemFeatures = [ "require-cuda" ];
+              requiredSystemFeatures = [ "cuda" ];
             }
             ''
               # Not running because of chdir()s, etc
@@ -280,15 +280,15 @@ buildPythonPackage rec {
             ]))
           ];
           outputs = [ "out" "logs" ];
-          requiredSystemFeatures = [ "require-cuda" ];
+          requiredSystemFeatures = [ "cuda" ];
         }
         ''
+          mkdir $out
+          cd $out
           python -m omnimotion.train \
             --config ${omnimotion.configs}/data/omnimotion/default.txt \
             --data_dir "${tests.preprocess-sintel}"
-          ls -l
-          cp -rf out $out
-          cp -rf logs $log
+          mv logs "$logs"
         '';
   };
 
