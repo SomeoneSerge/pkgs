@@ -46,12 +46,15 @@ let
             candidates.dream2nix = "${directory}/module.nix";
             kind =
               if builtins.pathExists candidates.package then "package"
-              else if builtins.pathExists then candidates.dream2nix
+              else if builtins.pathExists candidates.dream2nix then "dream2nix"
               else throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!";
           in
           {
             inherit directory kind;
-            path = if kind == "package" then candidates.package else candidates.dream2nix;
+            path =
+              if kind == "package"
+              then candidates.package
+              else candidates.dream2nix;
           })
         (readDir (baseDirectory + "/${shard}"));
 

@@ -18,13 +18,13 @@ let
           packages = oldLib.mapAttrs
             (name: { directory, kind, path }:
               let
-                module = lib.evalModules {
+                evaluatedModules = lib.evalModules {
                   specialArgs = {
                     inherit (inputs) dream2nix;
                     packageSets.nixpkgs = ps;
                   };
                   modules = [
-                    directory
+                    path
                     {
                       paths.projectRoot = baseDirectory;
                       paths.projectRootFile = "flake.nix";
@@ -35,7 +35,9 @@ let
                 };
                 package = ps.callPackage path { };
               in
-              if kind == "package" then package else module
+              if kind == "package" then package
+              else if kind == "dream2nix" then evaluatedModules.config.public
+              else throw "autocallByName: unknown kind ${kind}"
             )
             files;
         in

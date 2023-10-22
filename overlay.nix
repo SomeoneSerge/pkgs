@@ -53,7 +53,7 @@ in
   some-util = final.callPackage ./some-util { };
 
   some-pkgs =
-    (autocallByName final.some-pkgs ./pkgs/by-name) //
+    (autocallByName (final // final.some-pkgs) ./pkgs/by-name) //
     {
       some-pkgs-py = prev.recurseIntoAttrs final.python3Packages.some-pkgs-py;
       callPackage = final.newScope (final // final.some-pkgs.some-pkgs-py // final.some-pkgs);
