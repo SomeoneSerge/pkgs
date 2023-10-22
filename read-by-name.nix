@@ -39,7 +39,20 @@ let
       { }
     else
       mapAttrs
-        (name: _: baseDirectory + "/${shard}/${name}/package.nix")
+        (name: _:
+          let
+            directory = "${baseDirectory}/${shard}/${name}";
+            candidates.package = "${directory}/package.nix";
+            candidates.dream2nix = "${directory}/module.nix";
+            kind =
+              if builtins.pathExists candidates.package then "package"
+              else if builtins.pathExists then candidates.dream2nix
+              else throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!";
+          in
+          {
+            inherit directory kind;
+            path = if kind == "package" then candidates.package else candidates.dream2nix;
+          })
         (readDir (baseDirectory + "/${shard}"));
 
 in

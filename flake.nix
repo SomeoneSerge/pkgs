@@ -1,10 +1,13 @@
 {
   description = "some-pkgs: sci-comp packages that have no place in nixpkgs";
+
+  inputs.dream2nix.url = "github:nix-community/dream2nix";
+  inputs.dream2nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, dream2nix, nixpkgs }@inputs:
     let
-      inherit (import ./lib/extend-lib.nix nixpkgs.lib) lib;
+      inherit (import ./lib/extend-lib.nix { inherit inputs; oldLib = nixpkgs.lib; }) lib;
       systems = builtins.filter (name: builtins.hasAttr name nixpkgs.legacyPackages) [
         "x86_64-linux"
         "i686-linux"
@@ -37,7 +40,7 @@
         in
         lib.filterAttrs f packages;
 
-      overlay = import ./overlay.nix;
+      overlay = import ./overlay.nix { inherit inputs; };
 
       pkgs = forAllSystems (system: import nixpkgs {
         inherit system;

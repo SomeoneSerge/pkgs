@@ -1,4 +1,4 @@
-oldLib:
+{ inputs, oldLib }:
 let
   diff =
     {
@@ -16,8 +16,26 @@ let
         let
           files = lib.readByName baseDirectory;
           packages = oldLib.mapAttrs
-            (name: file:
-              ps.callPackage file { }
+            (name: { directory, kind, path }:
+              let
+                module = lib.evalModules {
+                  specialArgs = {
+                    inherit (inputs) dream2nix;
+                    packageSets.nixpkgs = ps;
+                  };
+                  modules = [
+                    directory
+                    {
+                      paths.projectRoot = baseDirectory;
+                      paths.projectRootFile = "flake.nix";
+                      paths.package = directory;
+                      paths.lockFile = "lock.json";
+                    }
+                  ];
+                };
+                package = ps.callPackage path { };
+              in
+              if kind == "package" then package else module
             )
             files;
         in

@@ -1,7 +1,8 @@
+{ inputs }:
 final: prev:
 let
   lib' = prev.lib;
-  inherit (import ./lib/extend-lib.nix prev.lib) lib;
+  inherit (import ./lib/extend-lib.nix { inherit inputs; oldLib = prev.lib; }) lib;
 
   inherit (lib) readByName autocallByName;
 
