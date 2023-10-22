@@ -23,7 +23,7 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "rerun";
-  version = "unstable-2023-09-24";
+  version = "prerelease";
 
   src = fetchFromGitHub {
     owner = "rerun-io";
