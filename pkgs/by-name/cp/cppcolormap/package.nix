@@ -10,13 +10,13 @@
 
 stdenv.mkDerivation rec {
   pname = "cppcolormap";
-  version = "1.4.4";
+  version = "1.4.5";
 
   src = fetchFromGitHub {
     owner = "tdegeus";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-YVVWeR7K1t3uOzCFes2zu+c0I1Tb1S1wh/Rmzi60Dp0=";
+    hash = "sha256-O/PaXYy4eyqx8GJosOvAGp7SiJ7p01wI757/YyUBi4g=";
   };
 
   nativeBuildInputs = [
