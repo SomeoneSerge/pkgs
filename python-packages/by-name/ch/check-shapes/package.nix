@@ -7,14 +7,14 @@
 
 buildPythonPackage rec {
   pname = "check-shapes";
-  version = "1.0.0";
+  version = "1.1.1";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "GPflow";
     repo = "check_shapes";
     rev = "v${version}";
-    hash = "sha256-lTfJJ3gjpMmhLPoTSS9zlQj6q4w+v65F94Qwsaym6Xw=";
+    hash = "sha256-FeZ61316vATGVPIX2OexQn6XJjiWDmrBKJMHVEnAxhQ=";
   };
 
   nativeBuildInputs = [
