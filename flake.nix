@@ -53,6 +53,16 @@
         };
         overlays = [ overlay ];
       });
+      pkgsInsecureUnfree = forAllSystems (system: import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [
+            "openssl-1.1.1w"
+          ];
+        };
+        overlays = [ overlay ];
+      });
 
       newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs // pkgs.${system}.some-pkgs.some-pkgs-py);
       supportedPkgs = lib.mapAttrs filterUnsupported newAttrs;
@@ -64,6 +74,7 @@
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
           pkgsUnfree = pkgsUnfree.${system};
+          pkgsInsecureUnfree = pkgsInsecureUnfree.${system};
         }));
       };
     in
