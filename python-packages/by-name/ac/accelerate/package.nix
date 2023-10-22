@@ -9,14 +9,14 @@
 }:
 buildPythonPackage rec {
   name = "accelerate";
-  version = "0.22.0";
+  version = "0.23.0";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "huggingface";
     repo = name;
     rev = "v${version}";
-    hash = "sha256-Fuq13JWUXCG4NEeR5rWn41JDmTI6tyImCrOxss6ekNs=";
+    hash = "sha256-pFkEgE1NGLPBW1CeGU0RJr+1Nj/y58ZcljyOnJuR47A=";
   };
 
   propagatedBuildInputs = [
