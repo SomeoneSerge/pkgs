@@ -139,7 +139,7 @@ def prefix_modules(
         toplevel_files = sorted(set(Path(p.path).parts[0] for p in python_files))
         toplevel_module_names = [name.removesuffix(".py") for name in toplevel_files]
 
-        new_package = project.get_folder("omnimotion")
+        new_package = project.get_folder(prefix)
         if not new_package.exists():
             new_package.create()
             new_package.create_file("__init__.py")
