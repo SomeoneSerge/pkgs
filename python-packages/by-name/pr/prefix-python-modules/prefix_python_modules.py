@@ -21,7 +21,13 @@ from rope.refactor.rename import Rename
 
 parser = argparse.ArgumentParser("prefix-python-modules")
 parser.add_argument("repo_root", type=Path)
-parser.add_argument("--rename-external", nargs=3, action="append")
+parser.add_argument(
+    "--rename-external",
+    nargs=3,
+    action="append",
+    help="Takes (old_name, new_name, glob), e.g.:"
+    ' --rename-external utils dino.utils "**/extract_dino_features.py"',
+)
 parser.add_argument("--dont-catch", action="store_true")
 parser.add_argument("--prefix", required=True)
 parser.add_argument("--verbose", action="store_true")
