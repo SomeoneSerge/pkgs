@@ -13,7 +13,7 @@ import tempfile
 import textwrap
 import traceback
 from pathlib import Path
-from typing import Literal, Optional, Tuple
+from typing import List, Literal, Optional, Tuple
 
 from rope.base.project import Project
 from rope.refactor.move import MoveModule
@@ -28,6 +28,7 @@ parser.add_argument(
     help="Takes (old_name, new_name, glob), e.g.:"
     ' --rename-external utils dino.utils "**/extract_dino_features.py"',
 )
+parser.add_argument("-e", "--exclude-glob", action="append")
 parser.add_argument("--dont-catch", action="store_true")
 parser.add_argument("--prefix", required=True)
 parser.add_argument("--verbose", action="store_true")
@@ -45,9 +46,12 @@ def indent(s: str, n: int = 4) -> str:
     return textwrap.indent(s, " " * n)
 
 
-def convert_to_packages(project_root):
+def convert_to_packages(project_root, exclude_globs: List[str]):
     project = Project(project_root)
     python_files = [p for p in project.get_python_files()]
+    python_files = [
+        p for p in python_files if not fnmatch_any_glob(p.path, exclude_globs)
+    ]
 
     try:
         for f in python_files:
@@ -119,12 +123,17 @@ def apply_changes(
             return (None, description, None, None)
 
 
+def fnmatch_any_glob(path, globs):
+    return any(fnmatch.fnmatchcase(path, g) for g in globs)
+
+
 def prefix_modules(
     project_root,
     prefix,
     *,
     mode: Literal["first-error", "keep-going", "interactive"],
     verbose: bool,
+    exclude_globs: List[str],
 ):
     project = Project(project_root)
 
@@ -135,6 +144,9 @@ def prefix_modules(
 
         python_files = [p for p in project.get_python_files()]
         python_files = [p for p in python_files if Path(p.path).parts[0] != prefix]
+        python_files = [
+            p for p in python_files if not fnmatch_any_glob(p.path, exclude_globs)
+        ]
 
         toplevel_files = sorted(set(Path(p.path).parts[0] for p in python_files))
         toplevel_module_names = [name.removesuffix(".py") for name in toplevel_files]
@@ -152,7 +164,14 @@ def prefix_modules(
 
             old_path = r.pathlib
 
-            changes = MoveModule(project, r).get_changes(new_package)
+            try:
+                changes = MoveModule(project, r).get_changes(new_package)
+            except:
+                print(
+                    "Fatal error: coudln't prepare a MoveModule for"
+                    f" {name} -> {new_package.path}.{name}"
+                )
+                raise
             (action, description, error, tb) = apply_changes(
                 project, changes, mode=mode
             )
@@ -181,7 +200,15 @@ def prefix_modules(
         shutil.rmtree(parallel_tree_for_rope, ignore_errors=True)
 
 
-def rename_external(project_root, old_name, new_name, pattern, mode, quiet):
+def rename_external(
+    project_root,
+    old_name,
+    new_name,
+    pattern,
+    mode,
+    quiet,
+    exclude_globs: List[str],
+):
     if not quiet:
         print(
             f"rename_external({repr(project_root)}, {repr(old_name)}, {repr(new_name)}, {repr(pattern)})"
@@ -193,6 +220,7 @@ def rename_external(project_root, old_name, new_name, pattern, mode, quiet):
 
     resources = project.get_python_files()
     resources = [p for p in resources if fnmatch.fnmatchcase(p.path, pattern)]
+    resources = [p for p in resources if not fnmatch_any_glob(p.path, exclude_globs)]
 
     fake_package = tempfile.mkdtemp()
     sys.path.append(fake_package)
@@ -218,6 +246,8 @@ def main():
     global CATCH_ERRORS
     CATCH_ERRORS = not args.dont_catch
 
+    exclude_globs = args.exclude_glob or []
+
     successes, failures = [], []
 
     for old_name, new_name, pattern in args.rename_external or []:
@@ -228,6 +258,7 @@ def main():
             pattern,
             mode=args.mode,
             quiet=args.quiet,
+            exclude_globs=exclude_globs,
         )
         if error is not None:
             failures.append((description, error if args.quiet else tb))
@@ -238,13 +269,14 @@ def main():
         elif action == "quit":
             parser.exit(0)
 
-    convert_to_packages(args.repo_root)
+    convert_to_packages(args.repo_root, exclude_globs=exclude_globs)
 
     _successes, _failures = prefix_modules(
         args.repo_root,
         args.prefix,
         mode=args.mode,
         verbose=args.verbose,
+        exclude_globs=exclude_globs,
     )
     successes.extend(_successes)
     failures.extend(_failures)
