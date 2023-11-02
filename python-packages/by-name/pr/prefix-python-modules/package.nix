@@ -24,19 +24,7 @@ buildPythonPackage {
     setuptools # pkg_resources for rope
   ];
 
-  passthru.tests.omnimotion = omnimotion.overridePythonAttrs (oldAttrs:
-    let
-      inherit (oldAttrs) pname;
-    in
-    {
-      nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ prefix-python-modules ];
-      postPatch = ''
-        find -iname '*.py' -exec sed -i 's/[[:space:]]*sys.path.append.*//' '{}' \;
-        prefix-python-modules --prefix "$pname" .
-        echo PYTHONPATH=$PYTHONPATH
-        cp "$pyprojectToml" pyproject.toml
-      '';
-    });
+  passthru.tests = { inherit omnimotion; };
 
   meta = with lib; {
     description = pyproject.project.description;

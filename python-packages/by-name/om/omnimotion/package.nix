@@ -10,8 +10,10 @@
 , imageio-ffmpeg
 , kornia
 , matplotlib
+, nixpkgs-pytools
 , omnimotion
 , opencv4
+, prefix-python-modules
 , python
 , raft
 , runCommand
@@ -42,33 +44,25 @@ buildPythonPackage rec {
 
   pyprojectToml = ./pyproject.toml;
   postPatch =
-    let
-      dirSubmodules = [ "networks" "loaders" "preprocessing" ];
-      fileSubmodules = [ "config" "criterion" "train" "trainer" "util" "viz" ];
-
-      prefix = some-util.prefixPythonSubmodules{ inherit pname dirSubmodules fileSubmodules; };
-    in
     ''
-      cat "$pyprojectToml" > pyproject.toml
-
-      substituteInPlace preprocessing/extract_dino_features.py \
-        --replace "utils" "dino.utils" \
-        --replace "vision_transformer" "dino.vision_transformer"
-
       substituteInPlace preprocessing/exhaustive_raft.py \
-        --replace "from raft" "from raft.core.raft" \
-        --replace "from utils" "from raft.core.utils" \
         --replace ", default='models/raft-things.pth'" ""
 
-      substituteInPlace preprocessing/filter_raft.py \
-        --replace "from chain_raft" "from omnimotion.preprocessing.chain_raft"
-
-      ${prefix.sed}
-      ${prefix.mv}
+      find -iname '*.py' -exec sed -i 's/[[:space:]]*sys.path.append.*//' '{}' \;
+      prefix-python-modules . \
+        --prefix "$pname" \
+        --rename-external chain_raft omnimotion.preprocessing.chain_raft "**" \
+        --rename-external vision_transformer dino.vision_transformer "**" \
+        --rename-external raft raft.core.raft "**" \
+        --rename-external utils dino.utils "**/extract_dino_features.py" \
+        --rename-external utils raft.core.utils "**/exhaustive_raft.py"
+      cp "$pyprojectToml" pyproject.toml
     '';
 
   nativeBuildInputs = [
     setuptools
+    prefix-python-modules
+    nixpkgs-pytools
   ];
   propagatedBuildInputs = [
     configargparse

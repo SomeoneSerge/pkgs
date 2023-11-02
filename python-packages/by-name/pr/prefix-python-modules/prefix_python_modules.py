@@ -6,7 +6,9 @@ if "PREFIX_PYTHON_MODULES_DEBUG" in os.environ:
     pdb.set_trace()
 
 import argparse
+import fnmatch
 import shutil
+import sys
 import tempfile
 import textwrap
 import traceback
@@ -15,9 +17,11 @@ from typing import Literal, Optional, Tuple
 
 from rope.base.project import Project
 from rope.refactor.move import MoveModule
+from rope.refactor.rename import Rename
 
 parser = argparse.ArgumentParser("prefix-python-modules")
 parser.add_argument("repo_root", type=Path)
+parser.add_argument("--rename-external", nargs=3, action="append")
 parser.add_argument("--dont-catch", action="store_true")
 parser.add_argument("--prefix", required=True)
 parser.add_argument("--verbose", action="store_true")
@@ -109,15 +113,14 @@ def apply_changes(
             return (None, description, None, None)
 
 
-def main():
-    args = parser.parse_args()
-
-    global CATCH_ERRORS
-    CATCH_ERRORS = not args.dont_catch
-
-    convert_to_packages(args.repo_root)
-
-    project = Project(args.repo_root)
+def prefix_modules(
+    project_root,
+    prefix,
+    *,
+    mode: Literal["first-error", "keep-going", "interactive"],
+    verbose: bool,
+):
+    project = Project(project_root)
 
     parallel_tree_for_rope = tempfile.mkdtemp()
 
@@ -125,7 +128,7 @@ def main():
         project.validate()
 
         python_files = [p for p in project.get_python_files()]
-        python_files = [p for p in python_files if Path(p.path).parts[0] != args.prefix]
+        python_files = [p for p in python_files if Path(p.path).parts[0] != prefix]
 
         toplevel_files = sorted(set(Path(p.path).parts[0] for p in python_files))
         toplevel_module_names = [name.removesuffix(".py") for name in toplevel_files]
@@ -145,10 +148,10 @@ def main():
 
             changes = MoveModule(project, r).get_changes(new_package)
             (action, description, error, tb) = apply_changes(
-                project, changes, mode=args.mode
+                project, changes, mode=mode
             )
 
-            if error is not None and args.verbose:
+            if error is not None and verbose:
                 failures.append((description, tb))
             elif error is not None:
                 failures.append((description, error))
@@ -161,29 +164,97 @@ def main():
             elif action == "next":
                 continue
 
-            if error is not None and args.mode == "first-error":
+            if error is not None and mode == "first-error":
                 break
 
             assert not old_path.exists()
 
-        if args.mode != "interactive" and not args.quiet:
-            for description in successes:
-                print("Successfully applied the patch:")
-                print(indent(description))
-
-            for description, e in failures:
-                print("Failed to apply the patch:")
-                print(indent(description))
-                print(f"The error was: ({type(e).__name__}) {e}")
-
-        if not args.quiet and failures:
-            print(f"Observed the total of {len(failures)} failures")
-
-        if failures:
-            parser.exit(1)
+        return successes, failures
     finally:
         project.close()
         shutil.rmtree(parallel_tree_for_rope, ignore_errors=True)
+
+
+def rename_external(project_root, old_name, new_name, pattern, mode, quiet):
+    if not quiet:
+        print(
+            f"rename_external({repr(project_root)}, {repr(old_name)}, {repr(new_name)}, {repr(pattern)})"
+        )
+    project = Project(project_root)
+
+    resources = project.get_python_files()
+    resources = [p for p in resources if fnmatch.fnmatchcase(p.path, pattern)]
+
+    fake_package = tempfile.mkdtemp()
+    sys.path.append(fake_package)
+
+    (Path(fake_package) / old_name).mkdir()
+    (Path(fake_package) / old_name / "__init__.py").touch()
+
+    old_mod = project.find_module(old_name)
+
+    changes = Rename(project, old_mod).get_changes(new_name, resources=resources)
+
+    try:
+        return apply_changes(project, changes, mode=mode)
+    finally:
+        project.close()
+        shutil.rmtree(fake_package, ignore_errors=True)
+        sys.path.remove(fake_package)
+
+
+def main():
+    args = parser.parse_args()
+
+    global CATCH_ERRORS
+    CATCH_ERRORS = not args.dont_catch
+
+    successes, failures = [], []
+
+    for old_name, new_name, pattern in args.rename_external or []:
+        action, description, error, tb = rename_external(
+            args.repo_root,
+            old_name,
+            new_name,
+            pattern,
+            mode=args.mode,
+            quiet=args.quiet,
+        )
+        if error is not None:
+            failures.append((description, error if args.quiet else tb))
+        if error is None and description is not None:
+            successes.append(description)
+        elif action == "next":
+            continue
+        elif action == "quit":
+            parser.exit(0)
+
+    convert_to_packages(args.repo_root)
+
+    _successes, _failures = prefix_modules(
+        args.repo_root,
+        args.prefix,
+        mode=args.mode,
+        verbose=args.verbose,
+    )
+    successes.extend(_successes)
+    failures.extend(_failures)
+
+    if args.mode != "interactive" and not args.quiet:
+        for description in successes:
+            print("Successfully applied the patch:")
+            print(indent(description))
+
+        for description, e in failures:
+            print("Failed to apply the patch:")
+            print(indent(description))
+            print(f"The error was: ({type(e).__name__}) {e}")
+
+    if not args.quiet and failures:
+        print(f"Observed the total of {len(failures)} failures")
+
+    if failures:
+        parser.exit(1)
 
 
 if __name__ == "__main__":
