@@ -46,6 +46,8 @@ let
       ''
         cp ${./pyproject.toml} pyproject.toml
 
+        rm -rf alt_cuda_corr # Confuses rope
+
         find -iname '*.py' -exec \
           sed -i 's/sys.path.append.*$/pass/' '{}' '+'
 
