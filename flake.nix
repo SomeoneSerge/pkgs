@@ -51,8 +51,16 @@
         inherit system;
         config = {
           allowUnfree = true;
+        };
+        overlays = [ overlay ];
+      });
+      pkgsCuda = forAllSystems (system: import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
           cudaSupport = true;
           cudaCapabilities = [ "8.6" ];
+          cudaEnableForwardCompat = false;
         };
         overlays = [ overlay ];
       });
