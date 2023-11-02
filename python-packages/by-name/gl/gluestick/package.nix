@@ -36,6 +36,7 @@ buildPythonPackage rec {
 
   patches = [
     ./0006-gluestick.run-main-allow-overriding-weights.patch
+    ./0007-gluestick.run-set_default_device-to-init-on-cuda.patch
   ];
 
   postPatch = ''
