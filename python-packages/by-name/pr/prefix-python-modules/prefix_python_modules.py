@@ -182,14 +182,17 @@ def rename_external(project_root, old_name, new_name, pattern, mode, quiet):
         )
     project = Project(project_root)
 
+    old_parts = old_name.split(".")
+    old_path = Path(*old_parts)
+
     resources = project.get_python_files()
     resources = [p for p in resources if fnmatch.fnmatchcase(p.path, pattern)]
 
     fake_package = tempfile.mkdtemp()
     sys.path.append(fake_package)
 
-    (Path(fake_package) / old_name).mkdir()
-    (Path(fake_package) / old_name / "__init__.py").touch()
+    os.makedirs(Path(fake_package) / old_path)
+    (Path(fake_package) / old_path / "__init__.py").touch()
 
     old_mod = project.find_module(old_name)
 
