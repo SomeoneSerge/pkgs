@@ -40,15 +40,16 @@ buildPythonPackage rec {
 
   outputs = [ "out" "configs" ];
 
+  pyprojectToml = ./pyproject.toml;
   postPatch =
     let
       dirSubmodules = [ "networks" "loaders" "preprocessing" ];
       fileSubmodules = [ "config" "criterion" "train" "trainer" "util" "viz" ];
 
-      prefix = some-util.prefixPythonSubmodules { inherit pname dirSubmodules fileSubmodules; };
+      prefix = some-util.prefixPythonSubmodulesSed { inherit pname dirSubmodules fileSubmodules; };
     in
     ''
-      cat ${./pyproject.toml} > pyproject.toml
+      cat "$pyprojectToml" > pyproject.toml
 
       substituteInPlace preprocessing/extract_dino_features.py \
         --replace "utils" "dino.utils" \

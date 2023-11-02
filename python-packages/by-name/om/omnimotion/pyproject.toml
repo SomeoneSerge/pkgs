@@ -5,3 +5,6 @@ requires = [ "setuptools" ]
 [project]
 name = "omnimotion"
 version = "0.0.1"
+
+[tool.setuptools.packages]
+find = {}
