@@ -135,12 +135,6 @@ def main():
             new_package.create()
             new_package.create_file("__init__.py")
 
-        # for f in python_files:
-        #     rel_path = Path(f.path)
-        #     new_path = args.repo_root / args.prefix / rel_path
-        #     os.makedirs(new_path.parent, exist_ok=True)
-        #     new_path.touch()
-
         successes = []
         failures = []
         for name in toplevel_module_names:
