@@ -16,9 +16,14 @@ let
     inherit (raft) version;
 
     src = "${raft.src}/alt_cuda_corr";
+    postPatch = ''
+      substituteInPlace setup.py \
+        --replace "'correlation'" "'raft-alt-cuda-corr'" \
+        --replace "'alt_cuda_corr'" "'raft_alt_cuda_corr'"
+    '';
 
     pythonImportsCheck = [
-      "alt_cuda_corr"
+      "raft_alt_cuda_corr"
     ];
 
     meta = with lib; {
@@ -56,7 +61,8 @@ let
           --rename-external 'utils' "$pname".core.utils "**" \
           --rename-external 'update' "$pname".core.update "**" \
           --rename-external 'extractor' "$pname".core.extractor "**" \
-          --rename-external 'corr' "$pname".core.corr "**"
+          --rename-external 'corr' "$pname".core.corr "**" \
+          --rename-external 'alt_cuda_corr' "$pname"_alt_cuda_corr "**"
 
       '';
 
