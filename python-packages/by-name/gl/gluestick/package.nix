@@ -108,6 +108,7 @@ buildPythonPackage rec {
           env.MPLBACKEND = "AGG";
           env.SUPERPOINT_WEIGHTS = "${gluestick.resources}/resources/weights/superpoint_v1.pth";
         } ''
+        export MPLCONFIGDIR=$TMPDIR/mpl
         gluestick-run \
           --weights ${gluestick.merged.weights.v0_1_arxiv.package}/data/v0_1_arxiv.pth \
           -img1 ${gluestick.resources}/resources/img1.jpg \
