@@ -46,7 +46,7 @@ buildPythonPackage rec {
       dirSubmodules = [ "networks" "loaders" "preprocessing" ];
       fileSubmodules = [ "config" "criterion" "train" "trainer" "util" "viz" ];
 
-      prefix = some-util.prefixPythonSubmodulesSed { inherit pname dirSubmodules fileSubmodules; };
+      prefix = some-util.prefixPythonSubmodules{ inherit pname dirSubmodules fileSubmodules; };
     in
     ''
       cat "$pyprojectToml" > pyproject.toml
