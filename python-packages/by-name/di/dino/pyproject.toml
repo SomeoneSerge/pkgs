@@ -4,4 +4,4 @@ requires = [ "setuptools" ]
 
 [project]
 name = "dino"
-version = "27.04.2023"
+version = "2023.04.27"
