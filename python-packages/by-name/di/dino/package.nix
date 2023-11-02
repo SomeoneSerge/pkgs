@@ -4,6 +4,7 @@
 , fetch-torch-hub
 , numpy
 , pillow
+, prefix-python-modules
 , setuptools
 , some-util
 , stdenv
@@ -24,38 +25,19 @@ buildPythonPackage rec {
   };
 
   postPatch =
-    let
-      dirSubmodules = [ ];
-      fileSubmodules = [
-        "eval_copy_detection"
-        "eval_image_retrieval"
-        "eval_knn"
-        "eval_linear"
-        "eval_video_segmentation"
-        "hubconf"
-        "main_dino"
-        "run_with_submitit"
-        "utils"
-        "video_generation"
-        "vision_transformer"
-        "visualize_attention"
-      ];
-
-      prefix = some-util.prefixPythonSubmodules { inherit pname dirSubmodules fileSubmodules; };
-    in
     ''
-      cat ${./pyproject.toml} > pyproject.toml
+      cp ${./pyproject.toml} pyproject.toml
 
       sed -i \
         -e 's/^\(\s*\)\(state_dict = torch.hub\)/\1print(f"Going to download {url=} via torch.hub")\n\1\2/' \
         utils.py
 
-      ${prefix.sed}
-      ${prefix.mv}
+      prefix-python-modules . --prefix $pname
     '';
 
   nativeBuildInputs = [
     setuptools
+    prefix-python-modules
   ];
   propagatedBuildInputs = [
     numpy

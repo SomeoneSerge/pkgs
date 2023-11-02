@@ -1,11 +1,11 @@
 { lib
 , buildPythonPackage
-, fetchzip
 , fetchFromGitHub
+, fetchzip
+, prefix-python-modules
 , scipy
 , setuptools
 , some-datasets
-, some-util
 , stdenv
 , torch-kernel-generic
 }:
@@ -43,28 +43,23 @@ let
     };
 
     postPatch =
-      let
-        dirSubmodules = [ "core" ];
-        fileSubmodules = [ "demo" "evaluate" "train" ];
-
-        prefix = some-util.prefixPythonSubmodules { inherit pname dirSubmodules fileSubmodules; };
-      in
       ''
-        cat ${./pyproject.toml} > pyproject.toml
-
-        ${prefix.sed}
+        cp ${./pyproject.toml} pyproject.toml
 
         find -iname '*.py' -exec \
-          sed -i \
-            -e 's/sys.path.append.*$/pass/' \
-            -e 's/^import utils/import ${pname}.core.utils/' \
-            -e 's/^from \b\(utils\|update\|extractor\|corr\)\b/from ${pname}.core.\1/' \
-            '{}' '+'
+          sed -i 's/sys.path.append.*$/pass/' '{}' '+'
 
-        ${prefix.mv}
+        prefix-python-modules . --prefix "$pname"
+        prefix-python-modules . --prefix "$pname" \
+          --rename-external 'utils' "$pname".core.utils "**" \
+          --rename-external 'update' "$pname".core.update "**" \
+          --rename-external 'extractor' "$pname".core.extractor "**" \
+          --rename-external 'corr' "$pname".core.corr "**"
+
       '';
 
     nativeBuildInputs = [
+      prefix-python-modules
       setuptools
     ];
 
