@@ -85,6 +85,7 @@
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
           pkgsUnfree = pkgsUnfree.${system};
+          pkgsCuda = pkgsCuda.${system};
           pkgsInsecureUnfree = pkgsInsecureUnfree.${system};
         }));
       };
