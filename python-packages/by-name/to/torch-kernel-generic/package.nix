@@ -36,4 +36,7 @@ buildPythonPackage (args // rec {
   propagatedBuildInputs = (args.propagatedBuildInputs or [ ]) ++ [
     torch
   ];
+  meta = (args.meta or { }) // {
+    broken = args.meta.broken or (!torch.cudaSupport);
+  };
 })
