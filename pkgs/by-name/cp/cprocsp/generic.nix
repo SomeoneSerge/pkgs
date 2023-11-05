@@ -149,5 +149,5 @@ stdenv.mkDerivation {
   meta.license = lib.licenses.unfree // { shortName = "Crypto-Pro"; };
   meta.maintainers = [ lib.maintainers.SomeoneSerge ];
   meta.platforms = [ "x86_64-linux" ];
-  meta.sourceProvenance = [ lib.sourceTypes.binaryNative ];
+  meta.sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
 }
