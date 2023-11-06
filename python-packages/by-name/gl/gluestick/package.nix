@@ -96,6 +96,7 @@ buildPythonPackage rec {
         name = "v0_1_arxiv.pth";
         hash = "sha256-tNqVjkHGzQakNLfGNW+NvwBxpeiGrgPLV02/xrinOEg=";
         modelName = "gluestick-md";
+        cid = "QmRHQZSky63ERp357PECwNAo2qmYdCBKe4neDcTuZ3f1ey";
         urls = [ "https://github.com/cvg/GlueStick/releases/download/v0.1_arxiv/checkpoint_GlueStick_MD.tar" ];
       };
     };
