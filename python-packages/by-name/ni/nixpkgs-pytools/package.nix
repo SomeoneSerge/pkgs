@@ -13,7 +13,7 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "nix-community";
     repo = "nixpkgs-pytools";
-    rev = version;
+    rev = "70c7b9db33ea5e31d35d0b67c9171757e4d74bd0";
     hash = "sha256-rzF9IIWr2Gjf0l3YgxX+A0ifkl3r1kXbfsSPQlekJ7s=";
   };
 
