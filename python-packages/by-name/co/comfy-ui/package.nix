@@ -41,6 +41,7 @@ buildPythonApplication rec {
     ./0002-comfy.model_management-fallback-to-cpu.patch
     ./0003-tests-inference-guard-cuda-references.patch
     ./0004-cli_args-add-extra-path.patch
+    ./0005-folder_paths-allow-overriding-base_path.patch
   ];
 
   postPatch = ''
@@ -97,10 +98,11 @@ buildPythonApplication rec {
     export COMFY_BASE_PATH=$resources
   '';
 
-  # checkPhase = ''
-  #   runHook preCheck
-  #   runHook postCheck
-  # '';
+  # Disables pytestCheckPhase
+  checkPhase = ''
+    runHook preCheck
+    runHook postCheck
+  '';
 
   pytestFlagsArray = [
     # Depends on unstaged 'tests/inference/baseline'
