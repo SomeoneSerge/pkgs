@@ -56,10 +56,10 @@ def convert_to_packages(project_root, exclude_globs: List[str]):
     try:
         for f in python_files:
             rel_path = Path(f.path)
-            if rel_path.parent == Path("."):
-                continue
-            path = project_root / rel_path.parent / "__init__.py"
-            path.touch()
+            while rel_path.parent != Path("."):
+                path = project_root / rel_path.parent / "__init__.py"
+                path.touch()
+                rel_path = rel_path.parent
     finally:
         project.close()
 
@@ -150,6 +150,8 @@ def prefix_modules(
 
         toplevel_files = sorted(set(Path(p.path).parts[0] for p in python_files))
         toplevel_module_names = [name.removesuffix(".py") for name in toplevel_files]
+
+        assert all("-" not in x for x in toplevel_module_names), toplevel_module_names
 
         new_package = project.get_folder(prefix)
         if not new_package.exists():
