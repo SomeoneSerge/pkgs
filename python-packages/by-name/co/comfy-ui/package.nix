@@ -1,7 +1,7 @@
 { lib
 , accelerate
 , aiohttp
-, buildPythonApplication
+, buildPythonPackage
 , einops
 , fetchFromGitHub
 , pillow
@@ -22,7 +22,7 @@
 , transformers
 }:
 
-buildPythonApplication rec {
+buildPythonPackage rec {
   pname = "comfy-ui";
   version = "unstable-2023-11-06";
   pyproject = true;
@@ -42,6 +42,7 @@ buildPythonApplication rec {
     ./0003-tests-inference-guard-cuda-references.patch
     ./0004-cli_args-add-extra-path.patch
     ./0005-folder_paths-allow-overriding-base_path.patch
+    ./0006-folder_paths-in-temp-out-dirs-respect-overrides.patch
   ];
 
   postPatch = ''

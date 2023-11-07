@@ -1,7 +1,7 @@
-From b63525a667dc04c413f4d0aec247667eaf30ed9e Mon Sep 17 00:00:00 2001
+From e965b1cf03db8f43da665b09839c7ab8d00a3c25 Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Tue, 7 Nov 2023 00:29:17 +0000
-Subject: [PATCH 5/5] folder_paths: allow overriding base_path
+Subject: [PATCH 5/6] folder_paths: allow overriding base_path
 
 ...while re-using the relative paths listed in folder_paths.py
 ---

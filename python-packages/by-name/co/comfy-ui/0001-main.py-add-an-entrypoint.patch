@@ -1,7 +1,7 @@
 From 7311ede52d8a1c79049b81e9614c8c7e4537a556 Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Mon, 6 Nov 2023 20:23:23 +0000
-Subject: [PATCH 1/5] main.py: add an entrypoint
+Subject: [PATCH 1/6] main.py: add an entrypoint
 
 ---
  main.py | 6 +++++-
