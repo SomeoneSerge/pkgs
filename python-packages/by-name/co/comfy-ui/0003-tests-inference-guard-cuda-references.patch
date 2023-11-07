@@ -1,7 +1,7 @@
 From 85d472a0c68a78c90d1b6b8b504eeddef5124e63 Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Mon, 6 Nov 2023 20:55:23 +0000
-Subject: [PATCH 3/5] tests/inference: guard cuda references
+Subject: [PATCH 3/6] tests/inference: guard cuda references
 
 ---
  tests/inference/test_inference.py | 6 ++++--

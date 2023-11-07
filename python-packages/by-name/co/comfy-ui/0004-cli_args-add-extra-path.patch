@@ -1,7 +1,7 @@
-From daa90b12665f709ae42157494ab080739b17d4c4 Mon Sep 17 00:00:00 2001
+From 3d7b9fe76d8004309770d5121960329dcdba149a Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Tue, 7 Nov 2023 00:04:22 +0000
-Subject: [PATCH 4/5] cli_args: add --extra-path
+Subject: [PATCH 4/6] cli_args: add --extra-path
 
 For extending search paths ad hoc, as required for splayed installations
 ---
@@ -22,14 +22,14 @@ index e79b89c..2e2e823 100644
  if comfy.options.args_parsing:
      args = parser.parse_args()
 diff --git a/main.py b/main.py
-index 426359e..6e5c303 100644
+index 426359e..3206c03 100644
 --- a/main.py
 +++ b/main.py
 @@ -148,6 +148,9 @@ def main():
          folder_paths.set_temp_directory(temp_dir)
      cleanup_temp()
  
-+    for kind, path in args.extra_paths or []:
++    for kind, path in args.extra_path or []:
 +        folder_paths.add_model_folder_path(kind, path)
 +
      loop = asyncio.new_event_loop()
