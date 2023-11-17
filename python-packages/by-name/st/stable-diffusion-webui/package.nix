@@ -80,8 +80,16 @@ buildPythonPackage rec {
     prefix-python-modules . --prefix sd_webui
 
     # Until https://github.com/python-rope/rope/issues/731
-    sed -i -e '0,/import sd_webui.webui/{/import sd_webui.webui/d;}' \
+    sed -i \
+      -e '0,/import sd_webui.webui/{/import sd_webui.webui/d;}' \
+      -e 's/\([[:space:]]*\)def prepare_environment():/\1def prepare_environment():\n\1    return/' \
       sd_webui/modules/launch_utils.py
+
+    # Rope doesn't detect when people write module names as strings
+    substituteInPlace sd_webui/modules/shared_items.py \
+      --replace \
+        "'modules.shared'" \
+        "'sd_webui.modules.shared'"
 
     cp $pyprojectToml pyproject.toml
   '';
