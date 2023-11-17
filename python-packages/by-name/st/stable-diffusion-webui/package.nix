@@ -137,7 +137,7 @@ buildPythonPackage rec {
     mkdir -p $out/bin/
     cat << EOF > $out/bin/sd-webui
     #!${stdenv.shell}
-    ${lib.getExe python} -m accelerate.commands.accelerate_cli launch $out/bin/._sd-webui-launch-wrapped $@
+    ${lib.getExe python} -m accelerate.commands.accelerate_cli launch $out/bin/._sd-webui-launch-wrapped \$@
     EOF
     chmod +x $out/bin/sd-webui
   '';
