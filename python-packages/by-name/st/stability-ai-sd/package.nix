@@ -15,9 +15,9 @@
 , opencv4
 , prefix-python-modules
 , pudb
+, python
 , pytorch-lightning
 , streamlit
-
   # , streamlit-drawable-canvas
 , test-tube
 , torchmetrics
@@ -75,6 +75,10 @@ buildPythonPackage rec {
 
   # Needs `npm build`
   pythonRemoveDeps = [ "streamlit-drawable-canvas" ];
+
+  postInstall = ''
+    cp -r configs $out/${python.sitePackages}/ldm/
+  '';
 
   pythonImportsCheck = [
     "ldm"
