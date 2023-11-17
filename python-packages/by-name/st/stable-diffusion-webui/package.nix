@@ -62,6 +62,7 @@ buildPythonPackage rec {
 
   patches = [
     ./0001-modules.paths-try-PYTHONPATH-before-custom-search-pa.patch
+    ./0002-launch_utils-do-not-git-clone.patch
   ];
 
   postPatch = ''
@@ -77,12 +78,13 @@ buildPythonPackage rec {
         "possible_sd_paths = [" \
         "possible_sd_paths = sys.path + ["
 
+    touch localizations/__init__.py
+
     prefix-python-modules . --prefix sd_webui
 
     # Until https://github.com/python-rope/rope/issues/731
     sed -i \
       -e '0,/import sd_webui.webui/{/import sd_webui.webui/d;}' \
-      -e 's/\([[:space:]]*\)def prepare_environment():/\1def prepare_environment():\n\1    return/' \
       sd_webui/modules/launch_utils.py
 
     # Rope doesn't detect when people write module names as strings
@@ -90,6 +92,8 @@ buildPythonPackage rec {
       --replace \
         "'modules.shared'" \
         "'sd_webui.modules.shared'"
+
+    mv *.js *.json *.css configs sd_webui/
 
     cp $pyprojectToml pyproject.toml
   '';
