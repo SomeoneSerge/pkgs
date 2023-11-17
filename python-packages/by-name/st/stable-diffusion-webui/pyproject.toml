@@ -1,0 +1,13 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [ "setuptools" ]
+
+[project]
+name = "stable-diffusion-webui"
+version = "2023.11.6"
+
+[project.scripts]
+_sd-webui-launch = "sd_webui.launch:main"
+
+[tool.setuptools.packages.find]
+include = [ "sd_webui*" ]

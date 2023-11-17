@@ -1,0 +1,43 @@
+From 8145cf9d74ea777207e8c07193dc88bc547575a0 Mon Sep 17 00:00:00 2001
+From: Someone Serge <sergei.kozlukov@aalto.fi>
+Date: Tue, 7 Nov 2023 17:20:06 +0000
+Subject: [PATCH] modules.paths: try PYTHONPATH before custom search paths
+
+---
+ modules/paths.py | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/modules/paths.py b/modules/paths.py
+index 25052339..b14cd734 100644
+--- a/modules/paths.py
++++ b/modules/paths.py
+@@ -1,5 +1,7 @@
+ import os
+ import sys
++from pathlib import Path
++
+ from modules.paths_internal import models_path, script_path, data_path, extensions_dir, extensions_builtin_dir  # noqa: F401
+ 
+ import modules.safe  # noqa: F401
+@@ -43,6 +45,18 @@ path_dirs = [
+     (os.path.join(sd_path, '../k-diffusion'), 'k_diffusion/sampling.py', 'k_diffusion', ["atstart"]),
+ ]
+ 
++
++def find_dist_info(name):
++    name = name.replace("-", "_")
++    for path in sys.path:
++        for match in Path(path).glob(f"{name}-*.dist-info"):
++            return match
++
++
++REQUIRED_DISTS = [ "sgm", "stable_diffusion", "blip", "k_diffusion" ]
++if all(find_dist_info(name) is not None for name in REQUIRED_DISTS):
++    path_dirs = []
++
+ paths = {}
+ 
+ for d, must_exist, what, options in path_dirs:
+-- 
+2.42.0
+
