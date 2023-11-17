@@ -78,6 +78,11 @@ buildPythonPackage rec {
         "possible_sd_paths = sys.path + ["
 
     prefix-python-modules . --prefix sd_webui
+
+    # Until https://github.com/python-rope/rope/issues/731
+    sed -i -e '0,/import sd_webui.webui/{/import sd_webui.webui/d;}' \
+      sd_webui/modules/launch_utils.py
+
     cp $pyprojectToml pyproject.toml
   '';
 
@@ -138,7 +143,7 @@ buildPythonPackage rec {
   '';
 
   # Circular imports...
-  # pythonImportsCheck = [ "sd_webui.launch" ];
+  pythonImportsCheck = [ "sd_webui.launch" ];
 
   postFixup = ''
     buildPythonPath "$out $pythonPath"
