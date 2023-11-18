@@ -2,8 +2,6 @@
 , buildPythonPackage
 , fetchFromGitHub
 , stdenv
-, setuptools
-, wheel
 , accelerate
 , basicsr
 , blendmodes
@@ -36,6 +34,7 @@
 , safetensors
 , salesforce-blip
 , scikit-image
+, setuptools
 , stability-ai-generative-models
 , stability-ai-sd
 , timm
@@ -44,6 +43,8 @@
 , torchdiffeq
 , torchsde
 , transformers
+, wheel
+, xformers
 }:
 
 buildPythonPackage rec {
@@ -63,6 +64,9 @@ buildPythonPackage rec {
   patches = [
     ./0001-modules.paths-try-PYTHONPATH-before-custom-search-pa.patch
     ./0002-launch_utils-do-not-git-clone.patch
+    ./0003-paths_internal-just-use-the-relative-paths.patch
+    ./0004-sd_disable_initialization-the-https-huggingface.co-N.patch
+    ./0005-git-don-t-use-it.patch
   ];
 
   postPatch = ''
@@ -80,7 +84,8 @@ buildPythonPackage rec {
 
     touch localizations/__init__.py
 
-    prefix-python-modules . --prefix sd_webui
+    prefix-python-modules . --prefix sd_webui \
+      --rename-external facelib codeformer.facelib '**'
 
     # Until https://github.com/python-rope/rope/issues/731
     sed -i \
@@ -94,6 +99,11 @@ buildPythonPackage rec {
         "'sd_webui.modules.shared'"
 
     mv *.js *.json *.css configs sd_webui/
+
+    substituteInPlace sd_webui/extensions_builtin/LDSR/sd_hijack_ddpm_v1.py \
+      --replace \
+        'from pytorch_lightning.utilities.distributed import rank_zero_only' \
+        'from pytorch_lightning.utilities.rank_zero import rank_zero_only'
 
     cp $pyprojectToml pyproject.toml
   '';
@@ -143,6 +153,7 @@ buildPythonPackage rec {
     torchdiffeq
     torchsde
     transformers
+    xformers
   ];
 
   postInstall = ''
@@ -155,7 +166,12 @@ buildPythonPackage rec {
   '';
 
   # Circular imports...
-  pythonImportsCheck = [ "sd_webui.launch" ];
+  pythonImportsCheck = [
+    "sd_webui.launch"
+
+    # Cf. postPatch
+    "pytorch_lightning.utilities.rank_zero"
+  ];
 
   postFixup = ''
     buildPythonPath "$out $pythonPath"

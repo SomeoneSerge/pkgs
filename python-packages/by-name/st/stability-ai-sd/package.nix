@@ -83,6 +83,9 @@ buildPythonPackage rec {
   pythonImportsCheck = [
     "ldm"
     "ldm.models.diffusion.ddpm"
+
+    # Cf. postPatch
+    "pytorch_lightning.utilities.rank_zero"
   ];
 
   meta = with lib; {
