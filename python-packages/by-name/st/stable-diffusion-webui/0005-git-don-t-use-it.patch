@@ -1,17 +1,17 @@
-From 31603fc8c0dbdca1ddb43fabbcc342b0419ace1b Mon Sep 17 00:00:00 2001
+From 812eb34866ca3a70462f472d68d61ca046eea9f9 Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Sat, 18 Nov 2023 01:43:35 +0000
-Subject: [PATCH 5/5] git: don't use it
+Subject: [PATCH 5/8] git: don't use it
 
 ---
  modules/config_states.py | 12 +++++++++++-
- modules/extensions.py    |  8 ++++++++
+ modules/extensions.py    |  9 +++++++++
  modules/launch_utils.py  |  4 +++-
- modules/ui_extensions.py |  7 ++++++-
- 4 files changed, 28 insertions(+), 3 deletions(-)
+ modules/ui_extensions.py | 11 ++++++++---
+ 4 files changed, 31 insertions(+), 5 deletions(-)
 
 diff --git a/modules/config_states.py b/modules/config_states.py
-index b766aef1..9a21f235 100644
+index b766aef1..77770aa9 100644
 --- a/modules/config_states.py
 +++ b/modules/config_states.py
 @@ -8,7 +8,7 @@ import time
@@ -31,7 +31,7 @@ index b766aef1..9a21f235 100644
 +    return {
 +        "remote": "origin",
 +        "commit_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-+        "commit_date": "Thu, 01 Jan 1970 00:00:00 +0000",
++        "commit_date": 0,
 +        "branch": "master",
 +    }
 +
@@ -48,20 +48,21 @@ index b766aef1..9a21f235 100644
  
      if "webui" not in config:
 diff --git a/modules/extensions.py b/modules/extensions.py
-index bf9a1878..5e2add9f 100644
+index bf9a1878..49046918 100644
 --- a/modules/extensions.py
 +++ b/modules/extensions.py
-@@ -64,6 +64,9 @@ class Extension:
+@@ -64,6 +64,10 @@ class Extension:
          self.status = 'unknown' if self.status == '' else self.status
  
      def do_read_info_from_repo(self):
 +        print(f"{__name__}: do_read_info_from_repo: Preventing an attempt to read .git in {self.path}")
 +        self.remote = None
++        self.have_info_from_repo = True
 +        return
          repo = None
          try:
              if os.path.exists(os.path.join(self.path, ".git")):
-@@ -103,6 +106,9 @@ class Extension:
+@@ -103,6 +107,9 @@ class Extension:
          return res
  
      def check_updates(self):
@@ -71,7 +72,7 @@ index bf9a1878..5e2add9f 100644
          repo = Repo(self.path)
          for fetch in repo.remote().fetch(dry_run=True):
              if fetch.flags != fetch.HEAD_UPTODATE:
-@@ -125,6 +131,8 @@ class Extension:
+@@ -125,6 +132,8 @@ class Extension:
          self.status = "latest"
  
      def fetch_and_reset_hard(self, commit='origin'):
@@ -103,7 +104,7 @@ index b39008b0..8dca8fa9 100644
          return
  
 diff --git a/modules/ui_extensions.py b/modules/ui_extensions.py
-index 2e8c1d6d..767e83a6 100644
+index 2e8c1d6d..54af84b1 100644
 --- a/modules/ui_extensions.py
 +++ b/modules/ui_extensions.py
 @@ -4,7 +4,7 @@ import threading
@@ -115,6 +116,21 @@ index 2e8c1d6d..767e83a6 100644
  
  import gradio as gr
  import html
+@@ -198,12 +198,12 @@ def update_config_states_table(state_name):
+ 
+     config_name = config_state.get("name", "Config")
+     created_date = time.asctime(time.gmtime(config_state["created_at"]))
+-    filepath = config_state.get("filepath", "<unknown>")
++    filepath = config_state.get("filepath", "<unknown filepath>")
+ 
+     try:
+         webui_remote = config_state["webui"]["remote"] or ""
+         webui_branch = config_state["webui"]["branch"]
+-        webui_commit_hash = config_state["webui"]["commit_hash"] or "<unknown>"
++        webui_commit_hash = config_state["webui"]["commit_hash"] or "<unknown hash>"
+         webui_commit_date = config_state["webui"]["commit_date"]
+         if webui_commit_date:
+             webui_commit_date = time.asctime(time.gmtime(webui_commit_date))
 @@ -338,6 +338,9 @@ def normalize_git_url(url):
  def install_extension_from_url(dirname, url, branch_name=None):
      check_access()

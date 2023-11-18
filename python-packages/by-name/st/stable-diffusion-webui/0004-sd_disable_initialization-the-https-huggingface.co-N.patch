@@ -1,7 +1,7 @@
 From 2ab01d1b64f1833c25783368b219219f7f3faaca Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Sat, 18 Nov 2023 01:14:28 +0000
-Subject: [PATCH 4/5] sd_disable_initialization: the
+Subject: [PATCH 4/8] sd_disable_initialization: the
  https://huggingface.co/None/resolve/main/config.json issue
 
 ---
