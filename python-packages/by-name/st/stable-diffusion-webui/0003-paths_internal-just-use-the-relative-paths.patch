@@ -1,7 +1,7 @@
 From 92cae133ff87020ab46fe8c294d6c3f014bf8197 Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Sat, 18 Nov 2023 01:02:37 +0000
-Subject: [PATCH 3/5] paths_internal: just use the relative paths...
+Subject: [PATCH 3/8] paths_internal: just use the relative paths...
 
 ---
  modules/paths_internal.py | 8 ++++----

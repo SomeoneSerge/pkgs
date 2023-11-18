@@ -67,6 +67,11 @@ buildPythonPackage rec {
     ./0003-paths_internal-just-use-the-relative-paths.patch
     ./0004-sd_disable_initialization-the-https-huggingface.co-N.patch
     ./0005-git-don-t-use-it.patch
+    ./0006-gradio-serve-module-files-undconditionally.patch
+    ./0007-gradio-just-use-abspaths.patch
+
+    # https://github.com/python-rope/rope/pull/732#issuecomment-1817386694
+    # ./0008-patch-out-the-sys.path-tampering.patch
   ];
 
   postPatch = ''
@@ -98,7 +103,15 @@ buildPythonPackage rec {
         "'modules.shared'" \
         "'sd_webui.modules.shared'"
 
-    mv *.js *.json *.css configs sd_webui/
+    mv \
+      *.js \
+      *.json \
+      *.css \
+      configs \
+      html \
+      javascript \
+      textual_inversion_templates \
+      sd_webui/
 
     substituteInPlace sd_webui/extensions_builtin/LDSR/sd_hijack_ddpm_v1.py \
       --replace \
