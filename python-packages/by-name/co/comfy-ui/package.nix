@@ -4,23 +4,50 @@
 , buildPythonPackage
 , einops
 , fetchFromGitHub
-, pillow
+, formats
+, makeWrapper
 , opencv4
+, pillow
 , prefix-python-modules
 , psutil
 , pytestCheckHook
+, python
 , pyyaml
 , safetensors
 , scikit-image
 , scipy
 , setuptools
+, stable-diffusion-webui
 , torch
 , torchsde
 , torchvision
 , tqdm
-, websocket-client
 , transformers
+, websocket-client
 }:
+
+let
+  sd-webui-module = "${stable-diffusion-webui}/${python.sitePackages}/sd_webui";
+  relativeModelPaths = (formats.yaml { }).generate "extra-model-paths.yaml" {
+    a111 = {
+      checkpoints = "sd_webui_data/models/Stable-diffusion";
+      configs = "models/Stable-diffusion";
+      vae = "models/VAE";
+      loras = ''
+        models/Lora
+        models/LyCORIS
+      '';
+      upscale_models = ''
+        models/ESRGAN
+        models/RealESRGAN
+        models/SwinIR
+      '';
+      embeddings = "models/embeddings";
+      hypernetworks = "models/hypernetworks";
+      controlnet = "models/ControlNet";
+    };
+  };
+in
 
 buildPythonPackage rec {
   pname = "comfy-ui";
@@ -62,6 +89,7 @@ buildPythonPackage rec {
   nativeBuildInputs = [
     prefix-python-modules
     setuptools
+    makeWrapper
   ];
 
   propagatedBuildInputs = [
@@ -89,11 +117,6 @@ buildPythonPackage rec {
     scikit-image
     websocket-client
   ];
-
-  postInstall = ''
-    mkdir "$resources"
-    cp -r models custom_nodes "$resources/"
-  '';
 
   preCheck = ''
     export COMFY_BASE_PATH=$resources
@@ -129,12 +152,21 @@ buildPythonPackage rec {
     EOF
   '';
 
+  postInstall = ''
+    mkdir "$resources"
+    cp -r models custom_nodes "$resources/"
+
+    makeWrapper $out/bin/comfy-ui $out/bin/comfy-ui-relpaths \
+      --add-flags '--extra-model-paths-config "${relativeModelPaths}"' \
+      --set-default COMFY_BASE_PATH .
+  '';
+
   meta = with lib; {
     description = "The most powerful and modular stable diffusion GUI with a graph/nodes interface";
     homepage = "https://github.com/comfyanonymous/ComfyUI";
     license = licenses.gpl3Only;
     maintainers = with maintainers; [ ];
-    mainProgram = "comfy-ui";
+    mainProgram = "comfy-ui-relpaths";
     platforms = platforms.all;
   };
 }
