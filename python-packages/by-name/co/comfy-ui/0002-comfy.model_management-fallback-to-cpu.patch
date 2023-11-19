@@ -1,7 +1,7 @@
 From 62ac2e1df6c7cda2e443ca6572795ecc1eba667c Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Mon, 6 Nov 2023 20:29:36 +0000
-Subject: [PATCH 2/6] comfy.model_management: fallback to cpu
+Subject: [PATCH 2/8] comfy.model_management: fallback to cpu
 
 This is because --cpu users may want to use pytorch compiled without cuda support
 ---
