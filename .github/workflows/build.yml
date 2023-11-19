@@ -60,8 +60,10 @@ jobs:
         name: ${{ matrix.cachixName }}
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
-    - name: Build nix packages
-      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#checks.$(nix eval --raw --impure --expr builtins.currentSystem).vanilla"
+    - name: Build some-pkgs
+      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgs.some-pkgs"
+    - name: Build some-pkgs-py
+      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgs.some-pkgs-py"
     - name: Trigger NUR update
       # Don't replace <YOUR_REPO_NAME> here!
       if: ${{ matrix.nurRepo != '<YOUR_REPO_NAME>' }}

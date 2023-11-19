@@ -38,8 +38,10 @@ jobs:
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_UNFREE }}'
         name: some-unfree
-    - name: Build nix packages
-      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#checks.$(nix eval --raw --impure --expr builtins.currentSystem).cuda"
+    - name: Build some-pkgs
+      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgsCuda.some-pkgs"
+    - name: Build some-pkgs-py
+      run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgsCuda.some-pkgs-py"
     - name: Trigger NUR update
       # Don't replace <YOUR_REPO_NAME> here!
       if: ${{ matrix.nurRepo != '<YOUR_REPO_NAME>' }}

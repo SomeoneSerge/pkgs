@@ -86,18 +86,6 @@
       outputs = {
         inherit overlay lib;
 
-        checks = forAllSystems (system: {
-          vanilla = {
-            inherit (self.legacyPackages.${system}.pkgs) some-pkgs;
-            inherit (self.legacyPackages.${system}.pkgs.python3Packages)
-              some-pkgs-py;
-          };
-          cuda = {
-            inherit (self.legacyPackages.${system}.pkgsCuda) some-pkgs;
-            inherit (self.legacyPackages.${system}.pkgsCuda.python3Packages)
-              some-pkgs-py;
-          };
-        });
         packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
