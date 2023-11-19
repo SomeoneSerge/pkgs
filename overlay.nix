@@ -23,11 +23,6 @@ in
             python3Packages = py-final;
           });
 
-          faiss = py-final.toPythonModule (final.faiss.override {
-            pythonSupport = true;
-            pythonPackages = py-final;
-          });
-
           some-pkgs-faiss = py-final.toPythonModule (final.some-pkgs.faiss.override {
             pythonSupport = true;
             pythonPackages = py-final;
@@ -40,31 +35,31 @@ in
           quad-tree-loftr = scope.quad-tree-attention.feature-matching;
         };
       in
-      autocalled // extra // {
-        some-pkgs-py = (lib'.mapAttrs (name: _: py-final.${name}) (autocalled // extra)) // {
+      {
+        some-pkgs-py = final.recurseIntoAttrs (autocalled // extra // {
           callPackage = py-final.newScope (py-final // final.some-pkgs // scope);
-        };
+        });
       })
   ];
 
-  # Some things we want to expose even outside some-pkgs namespace:
-  inherit (final.some-pkgs) faiss;
+  inherit (final.python3Packags) some-pkgs-py;
 
-  some-util = final.callPackage ./some-util { };
+  some-util = final.recurseIntoAttrs (final.callPackage ./some-util { });
 
   some-pkgs =
-    (autocallByName (final // final.some-pkgs) ./pkgs/by-name) //
-    {
-      some-pkgs-py = prev.recurseIntoAttrs final.python3Packages.some-pkgs-py;
-      callPackage = final.newScope (final // final.some-pkgs.some-pkgs-py // final.some-pkgs);
+    final.recurseIntoAttrs
+      ((autocallByName (final // final.some-pkgs) ./pkgs/by-name) //
+      {
+        some-pkgs-py = prev.recurseIntoAttrs final.python3Packages.some-pkgs-py;
+        callPackage = final.newScope (final // final.some-pkgs.some-pkgs-py // final.some-pkgs);
 
-      faiss = final.callPackage ./pkgs/by-name/fa/faiss {
-        pythonPackages = final.python3Packages;
-        swig = final.swig4;
-      };
-    };
+        faiss = final.callPackage ./pkgs/by-name/fa/faiss {
+          pythonPackages = final.python3Packages;
+          swig = final.swig4;
+        };
+      });
 
-  some-datasets = import ./datasets { lib = final.lib; pkgs = final; };
+  some-datasets = final.recurseIntoAttrs (import ./datasets { lib = final.lib; pkgs = final; });
 
   opencv4 = if final.config.cudaSupport then prev.opencv4.override { stdenv = final.cudaPackages.backendStdenv; } else prev.opencv4;
 
