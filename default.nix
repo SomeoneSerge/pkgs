@@ -2,9 +2,10 @@
 { pkgs ? import <nixpkgs> { } }:
 
 let
-  overlay = import ./overlay.nix;
-  final = pkgs
-    // overlay final pkgs
-    // { callPackage = pkgs.lib.callPackageWith final; };
+  flake = import ./compat.nix { };
+  overlay = import ./overlay.nix { inherit (flake) inputs; };
+  final = pkgs.extend overlay;
 in
-final.some-pkgs
+final.some-pkgs // {
+  inherit (final) some-pkgs-py some-datasets some-util;
+}
