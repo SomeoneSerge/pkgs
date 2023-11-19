@@ -70,6 +70,8 @@ buildPythonPackage rec {
     ./0004-cli_args-add-extra-path.patch
     ./0005-folder_paths-allow-overriding-base_path.patch
     ./0006-folder_paths-in-temp-out-dirs-respect-overrides.patch
+    ./0007-cli_args-make-it-possible-to-see-the-final-args.patch
+    ./0008-options-os.environ-to-prevent-the-entrypoint-from-ig.patch
   ];
 
   postPatch = ''
@@ -158,10 +160,12 @@ buildPythonPackage rec {
 
     makeWrapper $out/bin/comfy-ui $out/bin/comfy-ui-relpaths \
       --add-flags '--extra-model-paths-config "${relativeModelPaths}"' \
-      --set-default COMFY_BASE_PATH .
+      --set-default COMFY_BASE_PATH . \
+      --set-default COMFY_FORCE_ARGS 1
   '';
 
   meta = with lib; {
+    broken = true; # The build works, but the runtime is untested
     description = "The most powerful and modular stable diffusion GUI with a graph/nodes interface";
     homepage = "https://github.com/comfyanonymous/ComfyUI";
     license = licenses.gpl3Only;

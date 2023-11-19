@@ -1,7 +1,7 @@
 From 3d7b9fe76d8004309770d5121960329dcdba149a Mon Sep 17 00:00:00 2001
 From: Someone Serge <sergei.kozlukov@aalto.fi>
 Date: Tue, 7 Nov 2023 00:04:22 +0000
-Subject: [PATCH 4/6] cli_args: add --extra-path
+Subject: [PATCH 4/8] cli_args: add --extra-path
 
 For extending search paths ad hoc, as required for splayed installations
 ---
