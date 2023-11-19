@@ -7,32 +7,36 @@
 
   outputs = { self, dream2nix, nixpkgs }@inputs:
     let
-      inherit (import ./lib/extend-lib.nix { inherit inputs; oldLib = nixpkgs.lib; }) lib;
-      systems = builtins.filter (name: builtins.hasAttr name nixpkgs.legacyPackages) [
-        "x86_64-linux"
-        "i686-linux"
-        "x86_64-darwin"
-        "aarch64-linux"
-        "armv6l-linux"
-        "armv7l-linux"
-      ];
+      inherit (import ./lib/extend-lib.nix {
+        inherit inputs;
+        oldLib = nixpkgs.lib;
+      })
+        lib;
+      systems =
+        builtins.filter (name: builtins.hasAttr name nixpkgs.legacyPackages) [
+          "x86_64-linux"
+          "i686-linux"
+          "x86_64-darwin"
+          "aarch64-linux"
+          "armv6l-linux"
+          "armv7l-linux"
+        ];
       forAllSystems = f: lib.genAttrs systems (system: f system);
 
       defaultPlatforms = [ "x86_64-linux" ];
 
       supportsPlatform = system: name: package:
-        let s = builtins.elem system (package.meta.platforms or defaultPlatforms); in s;
+        let
+          s = builtins.elem system (package.meta.platforms or defaultPlatforms);
+        in
+        s;
 
-      reservedName = name: builtins.elem name [
-        "lib"
-        "python"
-        "python3"
-      ];
+      reservedName = name: builtins.elem name [ "lib" "python" "python3" ];
 
       filterUnsupported = system: packages:
         let
           filters = [
-            (name: _: ! reservedName name)
+            (name: _: !reservedName name)
             (name: attr: attr ? type && attr.type == "derivation")
             (supportsPlatform system)
           ];
@@ -42,45 +46,58 @@
 
       overlay = import ./overlay.nix { inherit inputs; };
 
-      pkgs = forAllSystems (system: import nixpkgs {
-        inherit system;
-        overlays = [ overlay ];
-      });
+      pkgs = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ overlay ];
+        });
 
-      pkgsUnfree = forAllSystems (system: import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
-        overlays = [ overlay ];
-      });
-      pkgsCuda = forAllSystems (system: import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          cudaSupport = true;
-          cudaCapabilities = [ "8.6" ];
-          cudaEnableForwardCompat = false;
-        };
-        overlays = [ overlay ];
-      });
-      pkgsInsecureUnfree = forAllSystems (system: import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            "openssl-1.1.1w"
-          ];
-        };
-        overlays = [ overlay ];
-      });
+      pkgsUnfree = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          config = { allowUnfree = true; };
+          overlays = [ overlay ];
+        });
+      pkgsCuda = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+            cudaCapabilities = [ "8.6" ];
+            cudaEnableForwardCompat = false;
+          };
+          overlays = [ overlay ];
+        });
+      pkgsInsecureUnfree = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "openssl-1.1.1w" ];
+          };
+          overlays = [ overlay ];
+        });
 
-      newAttrs = forAllSystems (system: pkgs.${system}.some-pkgs // pkgs.${system}.some-pkgs.some-pkgs-py);
+      newAttrs = forAllSystems (system:
+        pkgs.${system}.some-pkgs // pkgs.${system}.some-pkgs.some-pkgs-py);
       supportedPkgs = lib.mapAttrs filterUnsupported newAttrs;
 
       outputs = {
         inherit overlay lib;
 
+        checks = forAllSystems (system: {
+          vanilla = {
+            inherit (self.legacyPackages.${system}.pkgs) some-pkgs;
+            inherit (self.legacyPackages.${system}.pkgs.python3Packages)
+              some-pkgs-py;
+          };
+          cuda = {
+            inherit (self.legacyPackages.${system}.pkgsCuda) some-pkgs;
+            inherit (self.legacyPackages.${system}.pkgsCuda.python3Packages)
+              some-pkgs-py;
+          };
+        });
         packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
