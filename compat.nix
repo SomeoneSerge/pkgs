@@ -89,6 +89,7 @@ let
 
   callFlake4 = flakeSrc: locks:
     let
+      flake = import (flakeSrc + "/flake.nix");
       inputs = parseInputs flakeSrc locks;
       outputs = flakeSrc // (flake.outputs (inputs // { self = outputs; }));
     in
@@ -233,4 +234,3 @@ let
     else throw "lock file '${lockFilePath}' has unsupported version ${toString lockFile.version}";
 in
 result
-
