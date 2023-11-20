@@ -42,7 +42,7 @@ in
       })
   ];
 
-  inherit (final.python3Packags) some-pkgs-py;
+  inherit (final.python3Packages) some-pkgs-py;
 
   some-util = final.recurseIntoAttrs (final.callPackage ./some-util { });
 
