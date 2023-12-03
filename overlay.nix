@@ -1,5 +1,7 @@
 { inputs }:
 final: prev:
+
+
 let
   lib' = prev.lib;
   inherit (import ./lib/extend-lib.nix { inherit inputs; oldLib = prev.lib; }) lib;
@@ -63,7 +65,7 @@ in
 
   opencv4 = if final.config.cudaSupport then prev.opencv4.override { stdenv = final.cudaPackages.backendStdenv; } else prev.opencv4;
 
-} // lib'.optionals (lib'.versionOlder lib'.version "23.11") {
+} // lib'.optionalAttrs (lib'.versionOlder lib'.version "23.11") {
   # 2023-08-28: NUR still uses the 23.05 channel which doesen't handle pythonPackagesExtensions
   python3 =
     let

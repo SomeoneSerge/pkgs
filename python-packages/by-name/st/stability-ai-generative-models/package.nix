@@ -26,7 +26,6 @@
 , timm
 , tokenizers
 , torch
-, torchaudio
 , torchdata
 , torchmetrics
 , torchvision
@@ -82,7 +81,8 @@ buildPythonPackage rec {
     timm
     tokenizers
     torch
-    torchaudio
+    # They probably don't need it
+    # torchaudio
     torchdata
     torchmetrics
     torchvision

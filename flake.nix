@@ -69,6 +69,15 @@
           };
           overlays = [ overlay ];
         });
+      pkgsRocm = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            rocmSupport = true;
+          };
+          overlays = [ overlay ];
+        });
       pkgsInsecureUnfree = forAllSystems (system:
         import nixpkgs {
           inherit system;
@@ -86,11 +95,12 @@
       outputs = {
         inherit overlay lib;
 
-        packages = supportedPkgs;
+        # packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
           pkgsUnfree = pkgsUnfree.${system};
           pkgsCuda = pkgsCuda.${system};
+          pkgsRocm = pkgsRocm.${system};
           pkgsInsecureUnfree = pkgsInsecureUnfree.${system};
         }));
       };
