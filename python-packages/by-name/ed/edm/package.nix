@@ -14,6 +14,8 @@
 , click
 , pyspng
 , python
+, singularity-tools
+, nixglhost
 }:
 
 buildPythonPackage rec {
@@ -76,6 +78,15 @@ buildPythonPackage rec {
   ];
 
   passthru.pythonWith = python.withPackages (_: [ edm ]);
+  passthru.image = singularity-tools.buildImage {
+    name = "edm";
+    memSize = 4 * 1024; # MiB
+    diskSize = 20 * 1024; # MiB
+    contents = [
+      nixglhost
+      (python.withPackages (_: [ edm ]))
+    ];
+  };
 
   meta = with lib; {
     description = "Elucidating the Design Space of Diffusion-Based Generative Models (EDM)";

@@ -22,6 +22,26 @@
         "type": "github"
       }
     },
+    "nix-gl-host": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1696418759,
+        "narHash": "sha256-YecI7dV+lqdFhpvoT2qDErrFpvxw66GuR7i+R7PKrHg=",
+        "owner": "numtide",
+        "repo": "nix-gl-host",
+        "rev": "d34c566615b34b3ab86e3d3b9d1b40f8bf4ac771",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "nix-gl-host",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1701607067,
@@ -79,6 +99,7 @@
     "root": {
       "inputs": {
         "dream2nix": "dream2nix",
+        "nix-gl-host": "nix-gl-host",
         "nixpkgs": "nixpkgs"
       }
     },

@@ -3,9 +3,11 @@
 
   inputs.dream2nix.url = "github:nix-community/dream2nix";
   inputs.dream2nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nix-gl-host.url = "github:numtide/nix-gl-host";
+  inputs.nix-gl-host.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
-  outputs = { self, dream2nix, nixpkgs }@inputs:
+  outputs = { self, dream2nix, nix-gl-host, nixpkgs }@inputs:
     let
       inherit (import ./lib/extend-lib.nix {
         inherit inputs;
@@ -64,7 +66,8 @@
           config = {
             allowUnfree = true;
             cudaSupport = true;
-            cudaCapabilities = [ "8.6" ];
+            # Support V100s and A100s on the Aalto's "Triton" and RTX3090 at the lab:
+            cudaCapabilities = [ "7.0" "8.0" "8.6" ];
             cudaEnableForwardCompat = false;
           };
           overlays = [ overlay ];

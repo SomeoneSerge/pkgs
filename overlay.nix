@@ -65,6 +65,8 @@ in
 
   opencv4 = if final.config.cudaSupport then prev.opencv4.override { stdenv = final.cudaPackages.backendStdenv; } else prev.opencv4;
 
+  nixglhost = inputs.nix-gl-host.defaultPackage.${prev.system};
+
 } // lib'.optionalAttrs (lib'.versionOlder lib'.version "23.11") {
   # 2023-08-28: NUR still uses the 23.05 channel which doesen't handle pythonPackagesExtensions
   python3 =
