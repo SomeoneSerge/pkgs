@@ -70,7 +70,16 @@
             cudaCapabilities = [ "7.0" "8.0" "8.6" ];
             cudaEnableForwardCompat = false;
           };
-          overlays = [ overlay ];
+          overlays = [
+            overlay
+            (final: prev: {
+              pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                (py-final: py-prev: {
+                  # torch = py-prev.torch.override { MPISupport = true; };
+                })
+              ];
+            })
+          ];
         });
       pkgsRocm = forAllSystems (system:
         import nixpkgs {
