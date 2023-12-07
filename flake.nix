@@ -121,8 +121,10 @@
             inherit (self.legacyPackages.x86_64-linux.pkgsCuda) some-pkgs some-pkgs-py;
           in
           {
-            inherit (some-pkgs-py) stable-diffusion-webui nvdiffrast edm;
-            edm-image = some-pkgs-py.edm.image;
+            aalto = {
+              inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
+              edm-image = some-pkgs-py.edm.image;
+            };
           };
       };
     in
