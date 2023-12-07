@@ -16,14 +16,46 @@
 , python
 , singularity-tools
 , nixglhost
+, prefixPythonModules ? true
+, mkShell
+, ncdu
+, config
+, formats
+, pyprojectToml ? {
+    build-backend.build-backend = "setuptools.build_meta";
+    build-backend.requires = [ "setuptools" ];
+    project.name = "edm";
+    project.version = "2023.01.31";
+    tool.setuptools.package-data = { };
+    tool.setuptools.packages.find = lib.optionalAttrs (!prefixPythonModules) {
+      include = [
+        "dataset_tool*"
+        "dnnlib*"
+        "example*"
+        "generate*"
+        "torch_utils*"
+        "train*"
+        "training*"
+      ];
+    };
+  }
+, extraInit ? ''
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+  ''
 }:
 
-buildPythonPackage rec {
+assert (extraInit != null) -> prefixPythonModules;
+
+buildPythonPackage ((lib.optionalAttrs (extraInit != null) {
+  edmExtraInit = extraInit;
+  passAsFile = [ "edmExtraInit" ];
+}) // {
   pname = "edm";
   version = "unstable-2023-01-31";
   pyproject = true;
 
-  pyprojectToml = ./pyproject.toml;
+  pyprojectToml = "${(formats.toml { }).generate "pyproject.toml" pyprojectToml}";
 
   src = fetchFromGitHub {
     owner = "NVlabs";
@@ -41,6 +73,8 @@ buildPythonPackage rec {
   # edm with other modules in the same site-packages, but not in the same
   # python process
   postPatch = ''
+    cat "$pyprojectToml" > pyproject.toml
+  '' + lib.optionalString prefixPythonModules ''
     prefix-python-modules . --prefix "$pname"
 
     cat << EOF >> "$pname/__init__.py"
@@ -49,7 +83,11 @@ buildPythonPackage rec {
     sys.modules["torch_utils"] = $pname.torch_utils
     EOF
 
-    cat "$pyprojectToml" > pyproject.toml
+    if [[ -n "''${edmExtraInit:-}" ]] ; then
+      cat "$edmExtraInit" >> "$pname/__init__.py"
+    fi
+
+    find -iname '*.py' -exec sed -i 's/\(class_name\s*=\s*.\)training/\1edm.training/' '{}' ';'
   '';
 
   nativeBuildInputs = [
@@ -69,22 +107,40 @@ buildPythonPackage rec {
     click
   ];
 
-  pythonImportsCheck = [
-    "edm.dataset_tool"
-    "edm.fid"
-    "edm.example"
-    "edm.train"
-    "edm.dnnlib.util"
-  ];
+  postFixup = lib.optionalString (!prefixPythonModules) ''
+    cp *.py "$out/${python.sitePackages}/"
+  '';
+
+  pythonImportsCheck = map (x: if prefixPythonModules then "edm.${x}" else x) (
+    [
+      "train"
+    ] ++ lib.optionals (!config.rocmSupport) [
+      "torch_utils"
+      "dataset_tool"
+      "fid"
+      "example"
+      "dnnlib.util"
+    ]
+  );
 
   passthru.pythonWith = python.withPackages (_: [ edm ]);
+  passthru.pythonWith' = (python.withPackages (ps: [
+    edm
+    ps.torch
+    ps.typing-extensions
+  ]));
   passthru.image = singularity-tools.buildImage {
     name = "edm";
-    memSize = 4 * 1024; # MiB
-    diskSize = 20 * 1024; # MiB
+    memSize = (if config.rocmSupport then 32 else 16) * 1024; # MiB (For squashfs compression to work properly)
+    diskSize = (if config.rocmSupport then 32 else 16) * 1024; # MiB (Shrunk after the build)
     contents = [
       nixglhost
-      (python.withPackages (_: [ edm ]))
+      ncdu
+      (python.withPackages (ps: [
+        edm
+        ps.torch
+        ps.typing-extensions
+      ]))
     ];
   };
 
@@ -96,4 +152,4 @@ buildPythonPackage rec {
     mainProgram = "edm";
     platforms = platforms.all;
   };
-}
+})

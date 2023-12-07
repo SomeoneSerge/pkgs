@@ -36,7 +36,7 @@ buildPythonPackage rec {
   meta = with lib; {
     description = "Python bindings for libspng.  Use with numpy";
     homepage = "https://github.com/nurpax/pyspng";
-    license = licenses.unfree; # FIXME: nix-init did not found a license
+    license = licenses.bsd3;
     maintainers = with maintainers; [ ];
   };
 }
