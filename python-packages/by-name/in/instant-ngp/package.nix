@@ -25,21 +25,6 @@
 let
   pname = "instant-ngp";
   version = "continuous";
-
-  cudatoolkit = symlinkJoin {
-    name = "cudatoolkit-root";
-    paths = with cudaPackages; [
-      cuda_nvcc
-      cuda_nvrtc
-      cuda_cudart
-      libcublas
-    ];
-    postBuild = ''
-      ln -s $out/lib $out/lib64
-    '';
-  };
-
-  inherit (cudaPackages) cudnn;
 in
 buildPythonPackage {
   inherit pname version;
@@ -65,15 +50,19 @@ buildPythonPackage {
   nativeBuildInputs = [
     cmake
     pkg-config
-    cudatoolkit
+    cudaPackages.cuda_nvcc
     addOpenGLRunpath
   ];
-  buildInputs = [
+  buildInputs = with cudaPackages; [
     openexr
     openexr.dev
     glew.dev
     glfw3
     cudnn
+    cuda_nvrtc
+    cuda_cudart
+    cuda_cccl
+    libcublas
   ] ++ [
     xorg.libX11
     xorg.libXcursor.dev
