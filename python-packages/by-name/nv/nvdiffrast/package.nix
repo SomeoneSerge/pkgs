@@ -45,8 +45,9 @@ buildPythonPackage rec {
     pkg-config
   ];
   buildInputs = [
-    cuda_nvcc
+    (lib.getDev cuda_nvcc)
     cuda_cudart # CUDA_CUDART_LIBRARY
+    cuda_cccl.dev # CUDA_CUDART_LIBRARY
     cudnn
     cuda_nvrtc # CUDA_NVRTC_LIB
     cuda_nvtx # LIBNVTOOLSEXT
