@@ -54,52 +54,6 @@
           overlays = [ overlay ];
         });
 
-      pkgsUnfree = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          config = { allowUnfree = true; };
-          overlays = [ overlay ];
-        });
-      pkgsCuda = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            cudaSupport = true;
-            # Support V100s and A100s on the Aalto's "Triton" and RTX3090 at the lab:
-            cudaCapabilities = [ "7.0" "8.0" "8.6" ];
-            cudaEnableForwardCompat = false;
-          };
-          overlays = [
-            overlay
-            (final: prev: {
-              pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-                (py-final: py-prev: {
-                  # torch = py-prev.torch.override { MPISupport = true; };
-                })
-              ];
-            })
-          ];
-        });
-      pkgsRocm = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            rocmSupport = true;
-          };
-          overlays = [ overlay ];
-        });
-      pkgsInsecureUnfree = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "openssl-1.1.1w" ];
-          };
-          overlays = [ overlay ];
-        });
-
       newAttrs = forAllSystems (system:
         pkgs.${system}.some-pkgs // pkgs.${system}.some-pkgs.some-pkgs-py);
       supportedPkgs = lib.mapAttrs filterUnsupported newAttrs;
@@ -110,10 +64,60 @@
         # packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
-          pkgsUnfree = pkgsUnfree.${system};
-          pkgsCuda = pkgsCuda.${system};
-          pkgsRocm = pkgsRocm.${system};
-          pkgsInsecureUnfree = pkgsInsecureUnfree.${system};
+          pkgsUnfree = forAllSystems (system:
+            import nixpkgs {
+              inherit system;
+              config = { allowUnfree = true; };
+              overlays = [ overlay ];
+            });
+          pkgsCuda = forAllSystems (system:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                cudaSupport = true;
+                # Support V100s and A100s on the Aalto's "Triton" and RTX3090 at the lab:
+                cudaCapabilities = [ "7.0" "8.0" "8.6" ];
+                cudaEnableForwardCompat = false;
+              };
+              overlays = [
+                overlay
+                (final: prev: {
+                  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                    (py-final: py-prev: {
+                      # torch = py-prev.torch.override { MPISupport = true; };
+                    })
+                  ];
+                })
+              ];
+            });
+          pkgsCudaCompat = forAllSystems (system:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                cudaSupport = true;
+                cudaCapabilities = [ "5.2" ];
+              };
+            });
+          pkgsRocm = forAllSystems (system:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                rocmSupport = true;
+              };
+              overlays = [ overlay ];
+            });
+          pkgsInsecureUnfree = forAllSystems (system:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                permittedInsecurePackages = [ "openssl-1.1.1w" ];
+              };
+              overlays = [ overlay ];
+            });
         }));
 
         herculesCI.onPush.default.outputs =
@@ -124,6 +128,9 @@
             aalto = {
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
               edm-image = some-pkgs-py.edm.image;
+            };
+            sm_52_ptx = {
+              inherit (self.legacyPackages.x86_64-linux.pkgsCuda.some-pkgs-py) stable-diffusion-webui nvdiffrast;
             };
           };
       };
