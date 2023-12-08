@@ -64,13 +64,22 @@
         # packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
-          pkgsUnfree = forAllSystems (system:
+          pkgsUnfree =
             import nixpkgs {
               inherit system;
               config = { allowUnfree = true; };
               overlays = [ overlay ];
-            });
-          pkgsCuda = forAllSystems (system:
+            };
+          pkgsCuda =
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                cudaSupport = true;
+              };
+              overlays = [ overlay ];
+            };
+          pkgsCudaCluster =
             import nixpkgs {
               inherit system;
               config = {
@@ -90,8 +99,8 @@
                   ];
                 })
               ];
-            });
-          pkgsCudaCompat = forAllSystems (system:
+            };
+          pkgsCudaCompat =
             import nixpkgs {
               inherit system;
               config = {
@@ -99,8 +108,9 @@
                 cudaSupport = true;
                 cudaCapabilities = [ "5.2" ];
               };
-            });
-          pkgsRocm = forAllSystems (system:
+              overlays = [ overlay ];
+            };
+          pkgsRocm =
             import nixpkgs {
               inherit system;
               config = {
@@ -108,8 +118,8 @@
                 rocmSupport = true;
               };
               overlays = [ overlay ];
-            });
-          pkgsInsecureUnfree = forAllSystems (system:
+            };
+          pkgsInsecureUnfree =
             import nixpkgs {
               inherit system;
               config = {
@@ -117,20 +127,17 @@
                 permittedInsecurePackages = [ "openssl-1.1.1w" ];
               };
               overlays = [ overlay ];
-            });
+            };
         }));
 
         herculesCI.onPush.default.outputs =
-          let
-            inherit (self.legacyPackages.x86_64-linux.pkgsCuda) some-pkgs some-pkgs-py;
-          in
           {
-            aalto = {
+            aalto = with self.legacyPackages.x86_64-linux.pkgsCudaCluster; {
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
               edm-image = some-pkgs-py.edm.image;
             };
             sm_52_ptx = {
-              inherit (self.legacyPackages.x86_64-linux.pkgsCuda.some-pkgs-py) stable-diffusion-webui nvdiffrast;
+              inherit (self.legacyPackages.x86_64-linux.pkgsCuda.some-pkgs-py) stable-diffusion-webui;
             };
           };
       };
