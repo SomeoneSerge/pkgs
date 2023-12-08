@@ -61,7 +61,7 @@
       outputs = {
         inherit overlay lib;
 
-        # packages = supportedPkgs;
+        packages = supportedPkgs;
         legacyPackages = newAttrs // (forAllSystems (system: {
           pkgs = pkgs.${system};
           pkgsUnfree =
