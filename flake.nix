@@ -94,7 +94,7 @@
                 (final: prev: {
                   pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
                     (py-final: py-prev: {
-                      # torch = py-prev.torch.override { MPISupport = true; };
+                      torch = py-prev.torch.override { MPISupport = true; };
                     })
                   ];
                 })
