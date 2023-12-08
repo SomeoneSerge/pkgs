@@ -139,9 +139,6 @@
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
               edm-image = some-pkgs-py.edm.image;
             };
-            sm_52_ptx = {
-              inherit (self.legacyPackages.x86_64-linux.pkgsCuda.some-pkgs-py) stable-diffusion-webui;
-            };
           };
       };
     in
