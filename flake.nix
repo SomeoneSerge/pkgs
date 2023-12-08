@@ -132,6 +132,9 @@
 
         herculesCI.onPush.default.outputs =
           {
+            fatCuda = with self.legacyPackages.x86_64-linux.pkgsCuda; {
+              inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
+            };
             aalto = with self.legacyPackages.x86_64-linux.pkgsCudaCluster; {
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
               edm-image = some-pkgs-py.edm.image;
