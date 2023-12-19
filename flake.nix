@@ -3,7 +3,7 @@
 
   inputs.dream2nix.url = "github:nix-community/dream2nix";
   inputs.dream2nix.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nix-gl-host.url = "github:numtide/nix-gl-host";
+  inputs.nix-gl-host.url = "github:SomeoneSerge/nix-gl-host"; # the jetson PR
   inputs.nix-gl-host.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
