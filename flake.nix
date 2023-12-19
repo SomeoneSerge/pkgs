@@ -25,7 +25,7 @@
         ];
       forAllSystems = f: lib.genAttrs systems (system: f system);
 
-      defaultPlatforms = [ "x86_64-linux" ];
+      defaultPlatforms = [ "x86_64-linux" "aarch64-linux" ];
 
       supportsPlatform = system: name: package:
         let
@@ -128,6 +128,19 @@
               };
               overlays = [ overlay ];
             };
+        } // lib.optionalAttrs (system == "aarch64-linux") {
+          pkgsXavier =
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                cudaSupport = true;
+                # Jetson AGX Xavier
+                cudaCapabilities = [ "7.2" ];
+                cudaEnableForwardCompat = false;
+              };
+              overlays = [ overlay ];
+            };
         }));
 
         herculesCI.onPush.default.outputs =
@@ -138,6 +151,9 @@
             aalto = with self.legacyPackages.x86_64-linux.pkgsCudaCluster; {
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
               edm-image = some-pkgs-py.edm.image;
+            };
+            jetsons.xavier = with self.legacyPackages.aarch64-linux.pkgsXavier; {
+              inherit (some-pkgs-py) edm nvdiffrast instant-ngp;
             };
           };
       };
