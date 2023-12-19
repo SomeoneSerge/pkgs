@@ -139,7 +139,46 @@
                 cudaCapabilities = [ "7.2" ];
                 cudaEnableForwardCompat = false;
               };
-              overlays = [ overlay ];
+              overlays = [
+                overlay
+
+                # https://github.com/NixOS/nixpkgs/pull/273389
+                (final: prev: {
+                  cudaPackages = prev.cudaPackages.overrideScope (cu-final: cu-prev: {
+                    cuda_compat = cu-prev.cuda_compat.overrideAttrs (prevAttrs: rec {
+
+                      env.autoPatchelfIgnoreMissingDeps = builtins.concatStringsSep " " (
+                        [
+                          prevAttrs.env.autoPatchelfIgnoreMissingDeps
+                          "libnvrm_gpu.so"
+                          "libnvrm_mem.so"
+                          "libnvdla_runtime.so"
+                        ]
+                        ++ libcudaExtraNeeded
+                      );
+
+                      # Append the jetpack's libnvrm_{gpu,mem}.so impure location with the lowest priority.
+                      # This way we trade safety for the out-of-the box experience on jetsons.
+                      appendRunpaths = [
+                        "${final.stdenv.cc.cc.lib}/lib"
+                      ] ++ prevAttrs.appendRunpaths ++ [ "/usr/lib/aarch64-linux-gnu/tegra/" ];
+
+                      libcudaExtraNeeded = [
+                        "libnvos.so"
+                        "libnvsocsys.so"
+                        "libnvrm_sync.so"
+                        "libnvos.so"
+                        "libnvsciipc.so"
+                        "libnvsocsys.so"
+                        "libnvrm_chip.so"
+                        "libnvrm_host1x.so"
+                        "libstdc++.so"
+                      ];
+
+                    });
+                  });
+                })
+              ];
             };
         }));
 
