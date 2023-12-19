@@ -150,7 +150,6 @@
             };
             aalto = with self.legacyPackages.x86_64-linux.pkgsCudaCluster; {
               inherit (some-pkgs-py) stable-diffusion-webui instant-ngp nvdiffrast edm;
-              edm-image = some-pkgs-py.edm.image;
             };
             jetsons.xavier = with self.legacyPackages.aarch64-linux.pkgsXavier; {
               inherit (some-pkgs-py) edm nvdiffrast instant-ngp;
