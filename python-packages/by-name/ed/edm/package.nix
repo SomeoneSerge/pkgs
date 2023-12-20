@@ -16,6 +16,7 @@
 , python
 , singularity-tools
 , nixglhost
+, runCommand
 }:
 
 buildPythonPackage rec {
@@ -87,6 +88,46 @@ buildPythonPackage rec {
       (python.withPackages (_: [ edm ]))
     ];
   };
+  passthru.dnnlibCache = runCommand "edm-dnnlib-cache"
+    {
+      nativeBuildInputs = [ edm.pythonWith ];
+      outputHashMode = "recursive";
+      outputHashAlgo = "sha256";
+      outputHash = "sha256-xzG8f40BVvjVFH2MlNX9TNoKOEDSNJ8nYidtiC3mV0o=";
+      env.urls = builtins.concatStringsSep "\n"
+        (map (x: "https://nvlabs-fi-cdn.nvidia.com/edm/pretrained/${x}") [
+          "edm-cifar10-32x32-cond-vp.pkl"
+          "edm-ffhq-64x64-uncond-vp.pkl"
+          "edm-afhqv2-64x64-uncond-vp.pkl"
+          "edm-imagenet-64x64-cond-adm.pkl"
+        ]);
+    }
+    ''
+      export HOME=$out
+      python << EOF
+      import os
+      import edm.dnnlib as dnnlib
+
+      for url in os.environ["urls"].split():
+        with dnnlib.util.open_url(url) as f:
+          pass
+      EOF
+    '';
+  passthru.gpuChecks.example = runCommand "edm-samples"
+    {
+      nativeBuildInputs = [ edm.pythonWith ];
+
+      # Cf. https://github.com/NixOS/nixpkgs/pull/256230
+      requiredSystemFeatures = [ "cuda" ];
+    }
+    ''
+      set -e
+      mkdir tmp
+      cd tmp
+      HOME="${edm.dnnlibCache}" python -m edm.example
+      cd ..
+      cp -r tmp/ $out
+    '';
 
   meta = with lib; {
     description = "Elucidating the Design Space of Diffusion-Based Generative Models (EDM)";
