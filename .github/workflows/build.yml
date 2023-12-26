@@ -50,7 +50,7 @@ jobs:
           extra-trusted-public-keys = some-unfree.cachix.org-1:2/+ag/3nMOroWbHV2UXRuxo9c2VkVb6mUUy7sCXDe1Y= cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=  pkgs.cachix.org-1:/fnDPhnDwMjJA8IXJl+eAJmnU3n/jgfgvb6SZGuq4gs=
     - uses: DeterminateSystems/magic-nix-cache-action@v2
       with:
-        upstream_cache: https://${{ matrix.cachixName }}.cachix.org
+        upstream-cache: https://${{ matrix.cachixName }}.cachix.org
     - name: Setup pkgs.cachix.org
       if: ${{ matrix.cachixName == 'pkgs' }}
       uses: cachix/cachix-action@v13
