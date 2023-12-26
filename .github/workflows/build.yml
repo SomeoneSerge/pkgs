@@ -22,12 +22,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nurRepo:
-          - some-pkgs
+        os: [ ubuntu-latest, macos-latest ]
         cachixName:
           - pkgs
           - some-unfree
-        os: [ ubuntu-latest, macos-latest ]
+        nurRepo:
+          - some-pkgs
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository
