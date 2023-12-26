@@ -51,13 +51,13 @@ jobs:
     - uses: DeterminateSystems/magic-nix-cache-action@v2
       with:
         upstream_cache: https://${{ matrix.cachixName }}.cachix.org
-    - name: Setup cachix
+    - name: Setup pkgs.cachix.org
       if: ${{ matrix.cachixName == 'pkgs' }}
       uses: cachix/cachix-action@v13
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         name: ${{ matrix.cachixName }}
-    - name: Setup cachix
+    - name: Setup some-unfree.cachix.org
       if: ${{ matrix.cachixName == 'some-unfree' }}
       uses: cachix/cachix-action@v13
       with:
@@ -71,10 +71,10 @@ jobs:
     - name: Build some-pkgs-py
       if: ${{ matrix.cachixName == 'pkgs' }}
       run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgs.some-pkgs-py"
-    - name: Build some-pkgs
+    - name: Build pkgsCuda.some-pkgs
       if: ${{ matrix.cachixName == 'some-unfree' }}
       run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgsCuda.some-pkgs"
-    - name: Build some-pkgs-py
+    - name: Build pkgsCuda.some-pkgs-py
       if: ${{ matrix.cachixName == 'some-unfree' }}
       run: nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --flake ".#legacyPackages.$(nix eval --raw --impure --expr builtins.currentSystem).pkgsCuda.some-pkgs-py"
     - name: Trigger NUR update
