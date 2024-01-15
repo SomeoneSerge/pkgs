@@ -53,13 +53,13 @@ jobs:
         upstream-cache: https://${{ matrix.cachixName }}.cachix.org
     - name: Setup pkgs.cachix.org
       if: ${{ matrix.cachixName == 'pkgs' }}
-      uses: cachix/cachix-action@v13
+      uses: cachix/cachix-action@v14
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         name: ${{ matrix.cachixName }}
     - name: Setup some-unfree.cachix.org
       if: ${{ matrix.cachixName == 'some-unfree' }}
-      uses: cachix/cachix-action@v13
+      uses: cachix/cachix-action@v14
       with:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_UNFREE }}'
         name: ${{ matrix.cachixName }}
