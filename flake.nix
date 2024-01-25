@@ -86,7 +86,7 @@
                 allowUnfree = true;
                 cudaSupport = true;
                 # Support V100s and A100s on the Aalto's "Triton" and RTX3090 at the lab:
-                cudaCapabilities = [ "7.0" "8.0" "8.6" ];
+                cudaCapabilities = [ "6.0" "7.0" "8.0" "8.6" ];
                 cudaEnableForwardCompat = false;
               };
               overlays = [
