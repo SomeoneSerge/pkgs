@@ -3,6 +3,7 @@
 , fetchFromGitHub
 , setuptools
 , prefix-python-modules
+, cudaPackages
 , edm
 , torch
 , torchvision
@@ -85,6 +86,7 @@ buildPythonPackage rec {
     diskSize = 20 * 1024; # MiB
     contents = [
       nixglhost
+      cudaPackages.saxpy
       (python.withPackages (_: [ edm ]))
     ];
   };
