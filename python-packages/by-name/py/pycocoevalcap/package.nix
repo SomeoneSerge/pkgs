@@ -4,6 +4,7 @@
 , setuptools
 , wheel
 , numpy
+, pycocotools
 }:
 
 buildPythonPackage rec {
@@ -25,6 +26,7 @@ buildPythonPackage rec {
 
   propagatedBuildInputs = [
     numpy
+    pycocotools
   ];
 
   pythonImportsCheck = [
