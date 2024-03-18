@@ -16,7 +16,7 @@ jobs:
       uses: DeterminateSystems/nix-installer-action@v9
       with:
         github-token: ${{ secrets.GH_PAT }}
-    - uses: DeterminateSystems/magic-nix-cache-action@v3
+    - uses: DeterminateSystems/magic-nix-cache-action@v4
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
     - name: Setup cachix
