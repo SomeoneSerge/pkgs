@@ -6,7 +6,7 @@
 
 stdenv.mkDerivation rec {
   pname = "loguru";
-  version = "unstable-2023-09-24";
+  version = "2.1.0";
 
   src = fetchFromGitHub {
     owner = "emilk";
