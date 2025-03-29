@@ -11,7 +11,7 @@
 
 let
   pname = "arxiv-py";
-  version = "1.4.8";
+  version = "2.1.0";
 in
 buildPythonPackage {
   inherit pname version;
@@ -21,7 +21,7 @@ buildPythonPackage {
     owner = "lukasschwab";
     repo = "arxiv.py";
     rev = "${version}";
-    hash = "sha256-Sq2Vj0rwFNORADKPSNiFH0hQLskOOmMBe44O7/fGrBo=";
+    hash = "sha256-2+Wyu4nQip9NDdJ1jHLRPcn21gpGFEfVz3zDruYZpeo=";
   };
 
   # requirements.txt contain dev dependencies after a comment, let's delete them
