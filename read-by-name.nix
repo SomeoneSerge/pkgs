@@ -28,35 +28,33 @@ let
 
   # Package files for a single shard
   # Type: String -> String -> AttrsOf Path
-  namesForShard = shard: type:
+  namesForShard =
+    shard: type:
     if type != "directory" then
-    # Ignore non-directories. Technically only README.md is allowed as a file in the base directory, so we could alternatively:
-    # - Assume that README.md is the only file and change the condition to `shard == "README.md"` for a minor performance improvement.
-    #   This would however cause very poor error messages if there's other files.
-    # - Ensure that README.md is the only file, throwing a better error message if that's not the case.
-    #   However this would make for a poor code architecture, because one type of error would have to be duplicated in the validity checks and here.
-    # Additionally in either of those alternatives, we would have to duplicate the hardcoding of "README.md"
+      # Ignore non-directories. Technically only README.md is allowed as a file in the base directory, so we could alternatively:
+      # - Assume that README.md is the only file and change the condition to `shard == "README.md"` for a minor performance improvement.
+      #   This would however cause very poor error messages if there's other files.
+      # - Ensure that README.md is the only file, throwing a better error message if that's not the case.
+      #   However this would make for a poor code architecture, because one type of error would have to be duplicated in the validity checks and here.
+      # Additionally in either of those alternatives, we would have to duplicate the hardcoding of "README.md"
       { }
     else
-      mapAttrs
-        (name: _:
-          let
-            directory = "${baseDirectory}/${shard}/${name}";
-            candidates.package = "${directory}/package.nix";
-            candidates.dream2nix = "${directory}/module.nix";
-            kind =
-              if builtins.pathExists candidates.package then "package"
-              else if builtins.pathExists candidates.dream2nix then "dream2nix"
-              else throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!";
-          in
-          {
-            inherit directory kind;
-            path =
-              if kind == "package"
-              then candidates.package
-              else candidates.dream2nix;
-          })
-        (readDir (baseDirectory + "/${shard}"));
+      mapAttrs (
+        name: _:
+        let
+          directory = "${baseDirectory}/${shard}/${name}";
+          candidates.package = "${directory}/package.nix";
+          kind =
+            if builtins.pathExists candidates.package then
+              "package"
+            else
+              throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!";
+        in
+        {
+          inherit directory kind;
+          path = if kind == "package" then candidates.package else candidates.dream2nix;
+        }
+      ) (readDir (baseDirectory + "/${shard}"));
 
 in
 mergeAttrsList (mapAttrsToList namesForShard (readDir baseDirectory))

@@ -1,13 +1,11 @@
 {
   description = "some-pkgs: sci-comp packages that have no place in nixpkgs";
 
-  inputs.dream2nix.url = "github:nix-community/dream2nix";
-  inputs.dream2nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nix-gl-host.url = "github:SomeoneSerge/nix-gl-host"; # the jetson PR
   inputs.nix-gl-host.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
-  outputs = { self, dream2nix, nix-gl-host, nixpkgs }@inputs:
+  outputs = { self, nix-gl-host, nixpkgs }@inputs:
     let
       inherit (import ./lib/extend-lib.nix {
         inherit inputs;
