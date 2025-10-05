@@ -14,7 +14,8 @@
 , tqdm
 , pillow
 , pybind11
-, lark
+, lark ? null
+, lark-parser ? null
 , commentjson
 , certifi
 , python
@@ -25,6 +26,7 @@
 let
   pname = "instant-ngp";
   version = "continuous";
+  lark' = if lark == null then lark-parser else lark;
 in
 buildPythonPackage {
   inherit pname version;
@@ -77,7 +79,7 @@ buildPythonPackage {
     tqdm
     pillow
     pybind11
-    lark
+    lark'
     commentjson
     certifi
   ];

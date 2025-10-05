@@ -1,3 +1,5 @@
+# FIXME: This is one huge pile of mess that hasn't been maintained since, about, early 2024.
+
 {
   inputs ? import ./lon.nix,
   nixpkgs ? inputs.nixpkgs,

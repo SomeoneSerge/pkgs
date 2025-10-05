@@ -1,3 +1,5 @@
+# FIXME: This is one huge pile of mess that hasn't been maintained since, about, early 2024.
+
 { oldLib }:
 let
   diff = {
@@ -12,7 +14,7 @@ let
     readByName = import ../read-by-name.nix { lib = oldLib; };
 
     autocallByName =
-      ps: baseDirectory:
+      callPackage: baseDirectory:
       let
         files = lib.readByName baseDirectory;
         packages = oldLib.mapAttrs (
@@ -23,7 +25,7 @@ let
             path,
           }:
           let
-            package = ps.callPackage path { };
+            package = callPackage path { };
           in
           if
             builtins.elem kind [

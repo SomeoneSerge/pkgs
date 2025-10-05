@@ -1,3 +1,5 @@
+# FIXME: This is one huge pile of mess that hasn't been maintained since, about, early 2024.
+
 # Derived from https://github.com/NixOS/nixpkgs/blob/86d0c37bba6b7f8ca20ebd834e793d05be51e40e/pkgs/top-level/read-by-name.nix
 
 /*

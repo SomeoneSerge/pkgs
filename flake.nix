@@ -1,3 +1,5 @@
+# FIXME: This is one huge pile of mess that hasn't been maintained since, about, early 2024.
+
 {
   description = "some-pkgs: sci-comp packages that have no place in nixpkgs";
   inputs.stable-flakes.url = "github:SomeoneSerge/stable-flakes";

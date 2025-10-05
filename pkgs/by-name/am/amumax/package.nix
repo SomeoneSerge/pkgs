@@ -26,7 +26,7 @@ buildGoModule rec {
 
   buildInputs = [
     cudaPackages.cuda_cudart
-    cudaPackages.cuda_nvcc.dev # for <crt/host_defines.h>, bug in Nixpkgs
+    (lib.getDev cudaPackages.cuda_nvcc) # for <crt/host_defines.h>, bug in Nixpkgs
     cudaPackages.libcufft
     cudaPackages.libcurand
   ];
