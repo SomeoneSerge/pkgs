@@ -1,4 +1,4 @@
-{ inputs, oldLib }:
+{ oldLib }:
 let
   diff = {
     maintainers.SomeoneSerge =
@@ -23,32 +23,30 @@ let
             path,
           }:
           let
-            evaluatedModules = lib.evalModules {
-              specialArgs = {
-                inherit (inputs) dream2nix;
-                packageSets.nixpkgs = ps;
-              };
-              modules = [
-                path
-                {
-                  paths.projectRoot = baseDirectory;
-                  paths.projectRootFile = "flake.nix";
-                  paths.package = directory;
-                  paths.lockFile = "lock.json";
-                }
-              ];
-            };
             package = ps.callPackage path { };
           in
-          if kind == "package" then
+          if
+            builtins.elem kind [
+              "recipe"
+              "package"
+            ]
+          then
             package
-          else if kind == "dream2nix" then
-            evaluatedModules.config.public
           else
             throw "autocallByName: unknown kind ${kind}"
         ) files;
       in
       packages;
+
+    keepMissing = prev: diff: oldLib.filterAttrs (name: _: !(builtins.hasAttr name prev)) diff;
+    keepNewer =
+      prev: diff:
+      oldLib.filterAttrs (
+        name: drv:
+        !(builtins.hasAttr name prev)
+        || !(lib.isDerivation drv)
+        || lib.versionAtLeast (lib.getVersion drv) (lib.getVersion prev.${name})
+      ) diff;
   };
   lib = oldLib.recursiveUpdate oldLib diff;
 in

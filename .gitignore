@@ -6,3 +6,4 @@ result-*
 **/*.png
 **/*.pth
 **/*.zip
+flake.lock

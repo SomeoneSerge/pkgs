@@ -44,15 +44,18 @@ let
         let
           directory = "${baseDirectory}/${shard}/${name}";
           candidates.package = "${directory}/package.nix";
-          kind =
-            if builtins.pathExists candidates.package then
+          candidates.recipe = "${directory}/default.nix";
+          kind = builtins.head (
+            builtins.filter (k: builtins.pathExists candidates.${k}) [
               "package"
-            else
-              throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!";
+              "recipe"
+            ]
+            ++ [ (throw "No package.nix or module.nix in ${baseDirectory}/${shard}/${name}!") ]
+          );
+          path = candidates.${kind};
         in
         {
-          inherit directory kind;
-          path = if kind == "package" then candidates.package else candidates.dream2nix;
+          inherit directory kind path;
         }
       ) (readDir (baseDirectory + "/${shard}"));
 

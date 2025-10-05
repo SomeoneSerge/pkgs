@@ -1,14 +1,17 @@
-# Use pkgs provided by NUR
-{ pkgs ? import <nixpkgs> { } }:
+{
+  inputs ? import ./lon.nix,
+  nixpkgs ? inputs.nixpkgs,
+  system ? builtins.currentSystem,
+  pkgs ? import nixpkgs { inherit system; }, # Accommodate pkgs passed by NUR
+  newScope ? pkgs.newScope,
+  lib ? pkgs.lib,
+}:
 
 let
-  flake = import ./compat.nix { src = ./.; };
-
-  # Ignoring the NUR's nixpkgs revision:
-  # final = pkgs.extend flake.outputs.overlay;
-  final = flake.outputs.legacyPackages.${pkgs.system}.pkgs;
+  final = pkgs.extend (import ./overlay.nix);
 in
-final.some-pkgs // {
+final.some-pkgs
+// {
   inherit (final) some-pkgs some-datasets some-util;
   inherit (final.some-pkgs) some-pkgs-py;
 }
